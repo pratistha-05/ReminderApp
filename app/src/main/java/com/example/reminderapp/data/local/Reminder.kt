@@ -9,6 +9,6 @@ data class Reminder(
     val dosage:String,
     @PrimaryKey(autoGenerate = false)
     val timeinMillis:Long,
-    val isTaken:Boolean,
+    var isTaken:Boolean,
     val isRepeat:Boolean
 )

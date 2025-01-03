@@ -21,19 +21,22 @@ class ReminderViewModel @Inject constructor(
     private val deleteUseCase: DeleteUseCase,
     private val updateUseCase: UpdateUseCase
 ): ViewModel() {
-  val uiState= getRemindersUseCase.invoke().map {
-      ReminderUiState(it)
-  }.stateIn(viewModelScope,started = SharingStarted.Eagerly, ReminderUiState())
+    val uiState = getRemindersUseCase.invoke().map {
+        ReminderUiState(it)
+    }.stateIn(viewModelScope, started = SharingStarted.Eagerly, ReminderUiState())
 
-    fun insert(reminder: Reminder)=viewModelScope.launch {
+    fun insert(reminder: Reminder) = viewModelScope.launch {
         insertUseCase.invoke(reminder)
     }
-    fun delete(reminder: Reminder)=viewModelScope.launch {
+
+    fun delete(reminder: Reminder) = viewModelScope.launch {
         deleteUseCase.invoke(reminder)
     }
-    fun update(reminder: Reminder)=viewModelScope.launch {
+
+    fun update(reminder: Reminder) = viewModelScope.launch {
         updateUseCase.invoke(reminder)
 
+    }
 }
 data class ReminderUiState(
     val list: List<Reminder> = emptyList()
