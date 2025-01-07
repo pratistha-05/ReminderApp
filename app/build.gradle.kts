@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-//    kotlin("kotlin-kapt")
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.compose.compiler)
 
 }
 
@@ -72,14 +74,16 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.room.ktx)
-    //   kapt(libs.room.compiler)
 
-    implementation(libs.dagger.hilt)
-//    kapt(libs.dagger.kapt)
+    implementation(libs.hilt.navigation.compose)
+    kapt(libs.hilt.android.compiler.v2511)
+    implementation ("androidx.room:room-runtime:2.6.1")
+    kapt ("androidx.room:room-compiler:2.6.1")
 
+    implementation ("androidx.room:room-ktx:2.6.1")
     implementation(libs.compose.material)
-
+    implementation(libs.hilt.android)
     implementation(libs.hilt.compose.navigation)
     implementation(libs.retrofit.gson.convertor)
+
 }

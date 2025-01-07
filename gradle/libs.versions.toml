@@ -8,6 +8,12 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2024.04.01"
+hiltAndroid = "2.51.1"
+ksp = "1.9.22-1.0.17"
+lifecycle = "2.8.6"
+hilt = "2.51.1"
+hiltAndroidCompiler = "2.51.1"
+coil = "2.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,12 +31,9 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material = { module = "androidx.compose.material:material", name = "1.6.8" }
-
-
-dagger-hilt = { module = "com.google.dagger:hilt-android", version = "2.50" }
-dagger-hilt-testing = { module = "com.google.dagger:hilt-android-testing", version = "2.50" }
-
-dagger-kapt = { module = 'com.google.dagger:hilt-android-compiler', version = "2.50" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler-v2511 = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 hilt-compose-navigation = { module = "androidx.hilt:hilt-navigation-compose", version = "1.2.0" }
 
 #Work manager
@@ -53,10 +56,7 @@ room-compiler = { module = "androidx.room:room-compiler", version = "2.6.1" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-dagger = { id = "com.google.dagger.hilt.android", version = "2.50" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "1.9.0" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt={ id="org.jetbrains.kotlin.kotlin-kapt",version.ref="kotlin"}
-kotlin-serialization={ id="org.jetbrains.kotlin.plugin.serialization",version.ref="kotlin"}
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
