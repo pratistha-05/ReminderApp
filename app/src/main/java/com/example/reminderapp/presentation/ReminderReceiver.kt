@@ -23,7 +23,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ReminderReceiver: BroadcastReceiver() {
     
-    @Inject private lateinit var updateUseCase: UpdateUseCase
+    @Inject
+    lateinit var updateUseCase: UpdateUseCase
 
     override fun onReceive(context: Context, intent: Intent) {
         val mediaPlayer:MediaPlayer = MediaPlayer.create(context, R.raw.music)
