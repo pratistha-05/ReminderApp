@@ -8,7 +8,6 @@ import com.example.reminderapp.data.local.Reminder
 import com.google.gson.Gson
 
 const val REMINDER="REMINDER"
-
 fun alarmSetup(context: Context, reminder: Reminder){
     val intent= Intent(context,ReminderReceiver::class.java).apply{
         putExtra(REMINDER, Gson().toJson(reminder))

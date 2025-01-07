@@ -1,10 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.android.compose)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+//    kotlin("kotlin-kapt")
+
 }
 
 android {
@@ -73,30 +72,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.svg.compose)
-    implementation(libs.material.icons.extended)
-    implementation(libs.androidx.datastore)
-    kapt(libs.hilt.android.compiler.v2511)
-    implementation ("androidx.room:room-runtime:2.6.1")
-    kapt ("androidx.room:room-compiler:2.6.1")
+    implementation(libs.room.ktx)
+    //   kapt(libs.room.compiler)
 
-    implementation ("androidx.room:room-ktx:2.6.1")
+    implementation(libs.dagger.hilt)
+//    kapt(libs.dagger.kapt)
+
+    implementation(libs.compose.material)
+
+    implementation(libs.hilt.compose.navigation)
+    implementation(libs.retrofit.gson.convertor)
 }
