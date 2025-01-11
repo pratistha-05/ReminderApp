@@ -64,6 +64,9 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         )
         viewModel.insert(reminder)
         alarmSetup(context, reminder)
+        scope.launch {
+          sheetState.hide()
+        }
       }
     }
   ) {
@@ -217,7 +220,7 @@ fun InputForm(
 @Composable
 fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context) {
   Card(modifier = Modifier.padding(8.dp)) {
-    Row(Modifier.padding(8.dp)) {
+    Row(Modifier.padding(8.dp).fillMaxWidth()) {
       Column {
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = item.name)

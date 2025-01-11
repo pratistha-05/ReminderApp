@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -21,73 +22,69 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ReminderReceiver: BroadcastReceiver() {
-    
+class ReminderReceiver : BroadcastReceiver() {
+
     @Inject lateinit var updateUseCase: UpdateUseCase
 
     override fun onReceive(context: Context, intent: Intent) {
-        val mediaPlayer:MediaPlayer = MediaPlayer.create(context, R.raw.music)
-
+        val mediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.music)
+        Log.d("ReminderApp", "Received reminder: ${intent.getStringExtra(REMINDER)}")
         val reminderJson = intent.getStringExtra(REMINDER)
         val reminder = Gson().fromJson(reminderJson, Reminder::class.java)
 
-        val doneIntent= Intent(context,ReminderReceiver::class.java).apply{
+        val doneIntent = Intent(context, ReminderReceiver::class.java).apply {
             putExtra(REMINDER, reminderJson)
-            action="DONE"
+            action = "DONE"
         }
-        val donePendingIntent=PendingIntent.getBroadcast(context,reminder.timeinMillis.toInt(),doneIntent,PendingIntent.FLAG_IMMUTABLE)
+        val donePendingIntent = PendingIntent.getBroadcast(context, reminder.timeinMillis.toInt(), doneIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        val rejectIntent= Intent(context,ReminderReceiver::class.java).apply{
+        val rejectIntent = Intent(context, ReminderReceiver::class.java).apply {
             putExtra(REMINDER, reminderJson)
-            action="REJECT"
+            action = "REJECT"
         }
-        val rejectPendingIntent=PendingIntent.getBroadcast(context,reminder.timeinMillis.toInt(),rejectIntent,PendingIntent.FLAG_IMMUTABLE)
+        val rejectPendingIntent = PendingIntent.getBroadcast(context, reminder.timeinMillis.toInt(), rejectIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        when (intent.action){
-            "DONE"->{
+        when (intent.action) {
+            "DONE" -> {
                 runBlocking {
                     updateUseCase.invoke(reminder.copy(isTaken = true))
                 }
-                cancelAlarm(context,reminder)
-                mediaPlayer.stop()
+                cancelAlarm(context, reminder)
+                mediaPlayer.release()
             }
-            "REJECT"-> {
+            "REJECT" -> {
                 runBlocking {
                     updateUseCase.invoke(reminder.copy(isTaken = false))
                 }
-                cancelAlarm(context,reminder)
-                mediaPlayer.stop()
+                cancelAlarm(context, reminder)
+                mediaPlayer.release()
             }
-            else->{
+            else -> {
 
-                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.TIRAMISU){
-                    if(ContextCompat.checkSelfPermission(context,POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED){
-
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                         val notification = NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.ic_launcher_foreground)
                             .setContentTitle("Medication reminder")
-                            .setContentText(reminder.name.plus("${reminder.dosage}"))
-                            .addAction(R.drawable.ic_launcher_foreground,"Done",donePendingIntent)
-                            .addAction(R.drawable.ic_launcher_foreground,"Close",rejectPendingIntent)
+                            .setContentText("${reminder.name} - ${reminder.dosage}")
+                            .addAction(R.drawable.ic_launcher_foreground, "Done", donePendingIntent)
+                            .addAction(R.drawable.ic_launcher_foreground, "Close", rejectPendingIntent)
                             .build()
 
-
-                        NotificationManagerCompat.from(context).notify(1,notification)
+                        NotificationManagerCompat.from(context).notify(1, notification)
                     }
-                }
-                else{
-                    val notification = NotificationCompat.Builder(context)
+                } else {
+                    val notification = NotificationCompat.Builder(context,"reminder_channel")
                         .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle("Medication reminder")
-                        .setContentText(reminder.name.plus("${reminder.dosage}"))
-                        .addAction(R.drawable.ic_launcher_foreground,"Done",donePendingIntent)
-                        .addAction(R.drawable.ic_launcher_foreground,"Close",rejectPendingIntent)
+                        .setContentText("${reminder.name} - ${reminder.dosage}")
+                        .addAction(R.drawable.ic_launcher_foreground, "Done", donePendingIntent)
+                        .addAction(R.drawable.ic_launcher_foreground, "Close", rejectPendingIntent)
                         .build()
 
-
-                    NotificationManagerCompat.from(context).notify(1,notification)
+                    NotificationManagerCompat.from(context).notify(1, notification)
                 }
-                mediaPlayer.release()
+
                 mediaPlayer.start()
             }
         }
