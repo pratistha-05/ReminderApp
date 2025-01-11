@@ -75,6 +75,18 @@ class ReminderReceiver: BroadcastReceiver() {
                         NotificationManagerCompat.from(context).notify(1,notification)
                     }
                 }
+                else{
+                    val notification = NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setContentTitle("Medication reminder")
+                        .setContentText(reminder.name.plus("${reminder.dosage}"))
+                        .addAction(R.drawable.ic_launcher_foreground,"Done",donePendingIntent)
+                        .addAction(R.drawable.ic_launcher_foreground,"Close",rejectPendingIntent)
+                        .build()
+
+
+                    NotificationManagerCompat.from(context).notify(1,notification)
+                }
                 mediaPlayer.release()
                 mediaPlayer.start()
             }
