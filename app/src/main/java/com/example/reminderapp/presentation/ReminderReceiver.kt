@@ -31,6 +31,7 @@ class ReminderReceiver : BroadcastReceiver() {
         Log.d("ReminderApp", "Received reminder: ${intent.getStringExtra(REMINDER)}")
         val reminderJson = intent.getStringExtra(REMINDER)
         val reminder = Gson().fromJson(reminderJson, Reminder::class.java)
+        val notificationManager = NotificationManagerCompat.from(context)
 
         val doneIntent = Intent(context, ReminderReceiver::class.java).apply {
             putExtra(REMINDER, reminderJson)
@@ -51,6 +52,8 @@ class ReminderReceiver : BroadcastReceiver() {
                 }
                 cancelAlarm(context, reminder)
                 mediaPlayer.stop()
+                mediaPlayer.release()
+                notificationManager.cancel(1)
             }
             "REJECT" -> {
                 runBlocking {
@@ -58,6 +61,9 @@ class ReminderReceiver : BroadcastReceiver() {
                 }
                 cancelAlarm(context, reminder)
                 mediaPlayer.stop()
+                mediaPlayer.release()
+                notificationManager.cancel(1)
+
             }
             else -> {
                         val notification = NotificationCompat.Builder(context,"reminder_channel")

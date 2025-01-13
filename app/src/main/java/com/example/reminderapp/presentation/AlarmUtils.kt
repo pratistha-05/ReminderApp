@@ -11,6 +11,7 @@ import com.example.reminderapp.data.local.Reminder
 import com.google.gson.Gson
 
 const val REMINDER="REMINDER"
+
 fun alarmSetup(context: Context, reminder: Reminder) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
