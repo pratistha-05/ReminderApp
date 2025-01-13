@@ -50,40 +50,27 @@ class ReminderReceiver : BroadcastReceiver() {
                     updateUseCase.invoke(reminder.copy(isTaken = true))
                 }
                 cancelAlarm(context, reminder)
-                mediaPlayer.release()
+                mediaPlayer.stop()
             }
             "REJECT" -> {
                 runBlocking {
                     updateUseCase.invoke(reminder.copy(isTaken = false))
                 }
                 cancelAlarm(context, reminder)
-                mediaPlayer.release()
+                mediaPlayer.stop()
             }
             else -> {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                        val notification = NotificationCompat.Builder(context)
+                        val notification = NotificationCompat.Builder(context,"reminder_channel")
                             .setSmallIcon(R.drawable.ic_launcher_foreground)
                             .setContentTitle("Medication reminder")
-                            .setContentText("${reminder.name} - ${reminder.dosage}")
+                            .setContentText("Take ${reminder.name} with dosage ${reminder.dosage}")
                             .addAction(R.drawable.ic_launcher_foreground, "Done", donePendingIntent)
                             .addAction(R.drawable.ic_launcher_foreground, "Close", rejectPendingIntent)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .build()
 
                         NotificationManagerCompat.from(context).notify(1, notification)
-                    }
-                } else {
-                    val notification = NotificationCompat.Builder(context,"reminder_channel")
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("Medication reminder")
-                        .setContentText("${reminder.name} - ${reminder.dosage}")
-                        .addAction(R.drawable.ic_launcher_foreground, "Done", donePendingIntent)
-                        .addAction(R.drawable.ic_launcher_foreground, "Close", rejectPendingIntent)
-                        .build()
-
-                    NotificationManagerCompat.from(context).notify(1, notification)
-                }
 
                 mediaPlayer.start()
             }

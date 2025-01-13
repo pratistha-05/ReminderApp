@@ -18,7 +18,7 @@ class BaseApplication : Application() {
             val channelName = "Reminder Notifications"
             val channelDescription = "Channel for medication reminders"
 
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT).apply {
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
                 description = channelDescription
                 enableLights(true)
                 lightColor = Color.RED
