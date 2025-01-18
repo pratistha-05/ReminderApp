@@ -12,12 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.Colors
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -27,11 +31,14 @@ import androidx.compose.ui.unit.sp
 fun InputForm(
   time: String,
   onTimeClick: (String) -> Unit,
-  onClick: (String, String) -> Unit
+  onClick: (String, String,Boolean) -> Unit
 ) {
   val name = remember { mutableStateOf("") }
   val dosage = remember { mutableStateOf("") }
   val context = LocalContext.current
+  val isRepeat = remember { mutableStateOf(false) }
+  val showIntervalDialog = remember { mutableStateOf(false) }
+  val intervalTime = remember { mutableStateOf(0L) }
 
   val timePickerDialog = remember {
     TimePickerDialog(
@@ -64,7 +71,7 @@ fun InputForm(
       modifier = Modifier.fillMaxWidth()
     )
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(5.dp))
     OutlinedTextField(
       value = dosage.value,
       onValueChange = { dosage.value = it },
@@ -72,7 +79,10 @@ fun InputForm(
       modifier = Modifier.fillMaxWidth()
     )
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(5.dp))
+
+    Text(
+      text = "Select Time")
 
     Row(
       horizontalArrangement = Arrangement.Start,
@@ -120,20 +130,35 @@ fun InputForm(
         )
       }
     }
-
-    Button(
-      onClick = { timePickerDialog.show() },
-      modifier = Modifier.fillMaxWidth()
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp),
+      verticalAlignment = Alignment.CenterVertically
     ) {
-      Text(text = "Select Time")
+      Text(text = "Repeat Alarm?")
+      Spacer(modifier = Modifier.width(8.dp))
+      Switch(
+        checked = isRepeat.value,
+        onCheckedChange = { isRepeat.value = it }
+      )
     }
-    Spacer(modifier = Modifier.height(16.dp))
-
+    if (isRepeat.value) {
+      Button(onClick = { showIntervalDialog.value = true }) {
+        Text(text = "Set Interval: ${if (intervalTime.value > 0) intervalTime.value / 1000 / 60 else "Not Set"} mins")
+      }
+    }
     Button(onClick = {
       timePickerDialog.dismiss()
-      onClick(name.value, dosage.value)
+      onClick(name.value, dosage.value, isRepeat.value)
     }) {
       Text(text = "Save")
+    }
+
+    if (showIntervalDialog.value) {
+      TimeIntervalPickerDialog(showIntervalDialog) { selectedInterval ->
+        intervalTime.value = selectedInterval
+      }
     }
   }
 }

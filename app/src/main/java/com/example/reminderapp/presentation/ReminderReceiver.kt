@@ -1,19 +1,15 @@
 package com.example.reminderapp.presentation
 
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.MediaPlayer
-import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import com.example.reminderapp.R
-import com.example.reminderapp.REMINDER
+import com.example.reminderapp.utils.REMINDER
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.domain.useCases.UpdateUseCase
 import com.google.gson.Gson

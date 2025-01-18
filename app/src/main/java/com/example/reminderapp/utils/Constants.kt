@@ -1,4 +1,4 @@
-package com.example.reminderapp
+package com.example.reminderapp.utils
 
 const val REMINDER="REMINDER"
 const val channelId = "reminder_channel"

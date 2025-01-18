@@ -26,7 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.components.InputForm
 import com.example.reminderapp.presentation.components.ReminderItem
+import com.example.reminderapp.utils.convertTimeToMillis
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -46,16 +48,19 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         onTimeClick = { pickedTime ->
           selectedTime.value = pickedTime
         }
-      ) { name, dosage ->
+      ) { name, dosage,isRepeat ->
         val reminder = Reminder(
           name = name,
           dosage = dosage,
-          timeinMillis = System.currentTimeMillis(),
+          timeinMillis = convertTimeToMillis(selectedTime.value),
           isTaken = false,
-          isRepeat = false
+          isRepeat = isRepeat
         )
         viewModel.insert(reminder)
-        alarmSetup(context, reminder)
+        if(isRepeat)
+          setUpPeriodicAlarm(context,reminder)
+        else
+          alarmSetup(context, reminder)
         scope.launch {
           sheetState.hide()
         }
@@ -93,5 +98,4 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     )
   }
 }
-
 

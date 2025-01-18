@@ -6,6 +6,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import com.example.reminderapp.utils.channelDescription
+import com.example.reminderapp.utils.channelId
+import com.example.reminderapp.utils.channelName
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
