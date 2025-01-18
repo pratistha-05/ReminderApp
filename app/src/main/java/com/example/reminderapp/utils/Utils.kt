@@ -1,6 +1,9 @@
 package com.example.reminderapp.utils
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 fun convertTimeToMillis(time: String): Long {
   val timeParts = time.split(":")
@@ -14,4 +17,9 @@ fun convertTimeToMillis(time: String): Long {
     set(Calendar.MILLISECOND, 0)
   }
   return calendar.timeInMillis
+}
+
+fun convertMillisToTime(timeInMillis: Long): String {
+  val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+  return formatter.format(Date(timeInMillis))
 }

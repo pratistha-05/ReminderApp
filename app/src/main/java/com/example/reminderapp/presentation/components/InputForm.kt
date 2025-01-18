@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 fun InputForm(
   time: String,
   onTimeClick: (String) -> Unit,
-  onClick: (String, String,Boolean) -> Unit
+  onClick: (String, String,Boolean,Long) -> Unit
 ) {
   val name = remember { mutableStateOf("") }
   val dosage = remember { mutableStateOf("") }
@@ -144,13 +144,13 @@ fun InputForm(
       )
     }
     if (isRepeat.value) {
-      Button(onClick = { showIntervalDialog.value = true }) {
+      Button(onClick = { showIntervalDialog.value = true }, enabled = isRepeat.value) {
         Text(text = "Set Interval: ${if (intervalTime.value > 0) intervalTime.value / 1000 / 60 else "Not Set"} mins")
       }
     }
     Button(onClick = {
       timePickerDialog.dismiss()
-      onClick(name.value, dosage.value, isRepeat.value)
+      onClick(name.value, dosage.value, isRepeat.value, intervalTime.value)
     }) {
       Text(text = "Save")
     }

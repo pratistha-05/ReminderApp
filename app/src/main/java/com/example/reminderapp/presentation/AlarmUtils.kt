@@ -54,7 +54,7 @@ fun cancelAlarm(context: Context, reminder: Reminder){
     }
 }
 
-fun setUpPeriodicAlarm(context: Context, reminder: Reminder){
+fun setUpPeriodicAlarm(context: Context, reminder: Reminder, intervalTime: Long){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (!alarmManager.canScheduleExactAlarms()) {
@@ -72,8 +72,7 @@ fun setUpPeriodicAlarm(context: Context, reminder: Reminder){
 
     val alarmManager=context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     try{
-        val interval = 2L*60L*1000L
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,reminder.timeinMillis,interval,pendingIntent)
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,reminder.timeinMillis,intervalTime,pendingIntent)
     }catch (e:SecurityException){
         e.printStackTrace()
     }

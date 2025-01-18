@@ -28,7 +28,6 @@ import com.example.reminderapp.presentation.components.InputForm
 import com.example.reminderapp.presentation.components.ReminderItem
 import com.example.reminderapp.utils.convertTimeToMillis
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -48,7 +47,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         onTimeClick = { pickedTime ->
           selectedTime.value = pickedTime
         }
-      ) { name, dosage,isRepeat ->
+      ) { name, dosage,isRepeat, intervalTime ->
         val reminder = Reminder(
           name = name,
           dosage = dosage,
@@ -57,8 +56,8 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
           isRepeat = isRepeat
         )
         viewModel.insert(reminder)
-        if(isRepeat)
-          setUpPeriodicAlarm(context,reminder)
+        if(isRepeat && intervalTime>0)
+          setUpPeriodicAlarm(context,reminder, intervalTime)
         else
           alarmSetup(context, reminder)
         scope.launch {
