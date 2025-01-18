@@ -14,9 +14,6 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "reminder_channel"
-            val channelName = "Reminder Notifications"
-            val channelDescription = "Channel for medication reminders"
 
             val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
                 description = channelDescription

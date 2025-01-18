@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.reminderapp.R
+import com.example.reminderapp.REMINDER
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.domain.useCases.UpdateUseCase
 import com.google.gson.Gson
