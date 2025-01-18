@@ -21,7 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.components.InputForm
@@ -39,8 +41,12 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 
   val selectedTime = remember { mutableStateOf("") }
 
+  val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
   ModalBottomSheetLayout(
     sheetState = sheetState,
+    modifier = Modifier
+      .fillMaxWidth() ,
     sheetContent = {
       InputForm(
         time = selectedTime.value,

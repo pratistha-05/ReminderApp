@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.AlarmOff
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,7 +49,7 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
       verticalAlignment = Alignment.CenterVertically
     ) {
       Column(
-        modifier = Modifier.weight(1f)
+        modifier = Modifier.weight(1f).padding(start = 8.dp)
       ) {
         Text(
           text = item.name,
@@ -76,12 +77,22 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
 
           Spacer(modifier = Modifier.width(26.dp))
 
-          Icon(
-            imageVector = Icons.Outlined.Alarm,
-            contentDescription = "Reminder Time",
-            tint = Color.Gray,
-            modifier = Modifier.size(14.dp)
-          )
+          if(item.isTaken) {
+            Icon(
+              imageVector = Icons.Outlined.Alarm,
+              contentDescription = "Reminder Time",
+              tint = Color.Gray,
+              modifier = Modifier.size(14.dp)
+            )
+          }
+          else{
+            Icon(
+              imageVector = Icons.Outlined.AlarmOff,
+              contentDescription = "Reminder Time",
+              tint = Color.Gray,
+              modifier = Modifier.size(14.dp)
+            )
+          }
           Spacer(modifier = Modifier.width(4.dp))
           Text(
             text = convertMillisToTime(item.timeinMillis),
