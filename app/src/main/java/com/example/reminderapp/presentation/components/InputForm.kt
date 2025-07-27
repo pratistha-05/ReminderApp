@@ -1,6 +1,5 @@
 package com.example.reminderapp.presentation.components
 
-import android.R
 import android.app.TimePickerDialog
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border

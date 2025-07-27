@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.example.reminderapp.R
 import com.example.reminderapp.utils.REMINDER
 import com.example.reminderapp.data.local.Reminder
@@ -63,19 +64,10 @@ class ReminderReceiver : BroadcastReceiver() {
 
             }
             else -> {
-                        val notification = NotificationCompat.Builder(context,"reminder_channel")
-                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-                            .setContentTitle("Medication reminder")
-                            .setContentText("Take ${reminder.name} with dosage ${reminder.dosage}")
-                            .addAction(R.drawable.ic_launcher_foreground, "Done", donePendingIntent)
-                            .addAction(R.drawable.ic_launcher_foreground, "Close", rejectPendingIntent)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
-                            .build()
-
-                        NotificationManagerCompat.from(context).notify(1, notification)
-
-                mediaPlayer.start()
+                val alarmIntent = Intent(context, AlarmService::class.java).apply {
+                    putExtra(REMINDER, reminderJson)
+                }
+                ContextCompat.startForegroundService(context, alarmIntent)
             }
         }
     }
