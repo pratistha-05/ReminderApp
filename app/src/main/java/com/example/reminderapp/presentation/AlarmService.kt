@@ -7,10 +7,11 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.example.reminderapp.R
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.utils.REMINDER
+import com.example.reminderapp.utils.channelId
+import com.example.reminderapp.utils.channelName
 import com.google.gson.Gson
 
 class AlarmService : Service() {
@@ -35,13 +36,11 @@ class AlarmService : Service() {
             return START_NOT_STICKY
         }
         reminder = Gson().fromJson(reminderJson, Reminder::class.java)
+        startForeground(1, buildNotification(reminder))
 
         mediaPlayer.isLooping = true
         mediaPlayer.start()
         shakeDetector.start()
-
-        // Start foreground with built notification
-        startForeground(1, buildNotification(reminder))
 
         return START_STICKY
     }
@@ -80,7 +79,7 @@ class AlarmService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, "reminder_channel")
+        return NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Medication reminder")
             .setContentText("Take ${reminder.name} with dosage ${reminder.dosage}")
@@ -90,5 +89,4 @@ class AlarmService : Service() {
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .build()
     }
-
 }
