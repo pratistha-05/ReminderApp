@@ -1,7 +1,7 @@
 package com.example.reminderapp.domain.useCases
 
 import com.example.reminderapp.data.local.Reminder
-import com.example.reminderapp.data.source.ReminderRepository
+import com.example.reminderapp.domain.repository.ReminderRepository
 import javax.inject.Inject
 
 class InsertReminderUseCase @Inject constructor(private val reminderRepository: ReminderRepository) {

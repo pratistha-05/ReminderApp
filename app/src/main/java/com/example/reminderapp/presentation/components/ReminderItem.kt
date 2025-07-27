@@ -15,10 +15,10 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.outlined.Alarm
-import androidx.compose.material.icons.outlined.AlarmOff
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -79,7 +79,7 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
 
           if(item.isTaken) {
             Icon(
-              imageVector = Icons.Outlined.Alarm,
+              imageVector = Icons.Default.Alarm,
               contentDescription = "Reminder Time",
               tint = Color.Gray,
               modifier = Modifier.size(14.dp)
@@ -87,7 +87,7 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
           }
           else{
             Icon(
-              imageVector = Icons.Outlined.AlarmOff,
+              imageVector = Icons.Outlined.Alarm,
               contentDescription = "Reminder Time",
               tint = Color.Gray,
               modifier = Modifier.size(14.dp)

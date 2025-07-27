@@ -1,8 +1,8 @@
-package com.example.reminderapp.data.source.impl
+package com.example.reminderapp.data.repositoryImpl
 
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.data.local.dao.ReminderDao
-import com.example.reminderapp.data.source.ReminderRepository
+import com.example.reminderapp.domain.repository.ReminderRepository
 import kotlinx.coroutines.flow.Flow
 
 class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepository {

@@ -3,8 +3,8 @@ package com.example.reminderapp.di
 import android.content.Context
 import com.example.reminderapp.data.local.ReminderDatabase
 import com.example.reminderapp.data.local.dao.ReminderDao
-import com.example.reminderapp.data.source.ReminderRepository
-import com.example.reminderapp.data.source.impl.ReminderRepositoryImpl
+import com.example.reminderapp.domain.repository.ReminderRepository
+import com.example.reminderapp.data.repositoryImpl.ReminderRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

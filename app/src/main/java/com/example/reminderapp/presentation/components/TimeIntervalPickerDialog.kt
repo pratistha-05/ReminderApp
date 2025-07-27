@@ -48,22 +48,14 @@ fun TimeIntervalPickerDialog(
               border = BorderStroke(1.dp, Color.Black),) {
               Text("Minutes")
             }
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(onClick = { selectedUnit.value = "Hours" },
-              colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black),
-              border = BorderStroke(1.dp, Color.Black)) {
-              Text("Hours")
-            }
           }
           Spacer(modifier = Modifier.height(16.dp))
 
           Slider(
             value = selectedValue.value.toFloat(),
             onValueChange = { selectedValue.value = it.toInt() },
-            valueRange = if (selectedUnit.value == "Minutes") 0f..60f else 1f..24f,
-            steps = if (selectedUnit.value == "Minutes") 60 else 23,
+            valueRange = 1f..15f,
+            steps = 13,
             colors = SliderDefaults.colors(
               thumbColor = Color(0xFF006400),
               activeTrackColor = Color(0xFF006400),
@@ -80,11 +72,7 @@ fun TimeIntervalPickerDialog(
         Button(
           onClick = {
             showDialog.value = false
-            val intervalInMillis = if (selectedUnit.value == "Minutes") {
-              selectedValue.value * 60L * 1000L
-            } else {
-              selectedValue.value * 60L * 60L * 1000L
-            }
+            val intervalInMillis = selectedValue.value * 60L * 1000L
             onIntervalSelected(intervalInMillis)
           },
           colors = ButtonDefaults.buttonColors(

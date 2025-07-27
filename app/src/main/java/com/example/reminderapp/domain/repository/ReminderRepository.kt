@@ -1,4 +1,4 @@
-package com.example.reminderapp.data.source
+package com.example.reminderapp.domain.repository
 
 import com.example.reminderapp.data.local.Reminder
 import kotlinx.coroutines.flow.Flow
