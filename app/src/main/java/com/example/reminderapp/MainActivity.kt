@@ -43,3 +43,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+/*
+1. calendar integration
+2. validations in input field
+3. swipe to delete or taken
+4. to take(upcoming), taken
+ */
