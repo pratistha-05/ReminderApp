@@ -49,8 +49,7 @@ class ReminderReceiver : BroadcastReceiver() {
                     updateUseCase.invoke(reminder.copy(isTaken = true))
                 }
                 cancelAlarm(context, reminder)
-                mediaPlayer.stop()
-                mediaPlayer.release()
+                context.stopService(Intent(context, AlarmService::class.java))
                 notificationManager.cancel(1)
             }
             "REJECT" -> {
@@ -58,8 +57,7 @@ class ReminderReceiver : BroadcastReceiver() {
                     updateUseCase.invoke(reminder.copy(isTaken = false))
                 }
                 cancelAlarm(context, reminder)
-                mediaPlayer.stop()
-                mediaPlayer.release()
+                context.stopService(Intent(context, AlarmService::class.java))
                 notificationManager.cancel(1)
 
             }

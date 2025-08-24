@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            ReminderAppTheme {
+            ReminderAppTheme(darkTheme = false) {
                 ReminderListUi()
             }
         }
