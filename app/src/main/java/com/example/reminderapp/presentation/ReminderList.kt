@@ -13,7 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
@@ -42,7 +42,6 @@ import com.example.reminderapp.utils.convertTimeToMillis
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
@@ -127,7 +126,6 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
   }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateItem(selectedDate: MutableState<LocalDate>, date: LocalDate) {
   val isSelected = selectedDate.value == date
