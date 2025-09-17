@@ -50,7 +50,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
 
-  val selectedTime = remember { mutableStateOf("") }
+  var selectedTime = remember { mutableStateOf("") }
   val selectedDate = remember { mutableStateOf(LocalDate.now()) }
   val today = LocalDate.now()
   val days = remember {
@@ -67,6 +67,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
           selectedTime.value = pickedTime
         }
       ) { name, dosage, isRepeat, intervalTime ->
+        //TODO: validation
         val reminder = Reminder(
           name = name,
           dosage = dosage,
@@ -79,7 +80,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
           setUpPeriodicAlarm(context, reminder, intervalTime)
         else
           alarmSetup(context, reminder)
-        scope.launch { sheetState.hide() }
+        scope.launch {
+          selectedTime.value = ""
+          sheetState.hide()
+        }
       }
     }
   ) {

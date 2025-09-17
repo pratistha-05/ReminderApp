@@ -1,6 +1,8 @@
 package com.example.reminderapp.presentation.components
 
 import android.app.TimePickerDialog
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,32 +33,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import java.util.Calendar
 @Composable
 fun InputForm(
     time: String,
     onTimeClick: (String) -> Unit,
     onClick: (String, String, Boolean, Long) -> Unit
 ) {
+
     val name = remember { mutableStateOf("") }
     val dosage = remember { mutableStateOf("") }
     val context = LocalContext.current
     val isRepeat = remember { mutableStateOf(false) }
     val showIntervalDialog = remember { mutableStateOf(false) }
     val intervalTime = remember { mutableStateOf(0L) }
-
-    val timePickerDialog = remember {
-        TimePickerDialog(
-            context,
-            { _, hourOfDay, minute ->
-                val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
-                onTimeClick(formattedTime)
-            },
-            12,
-            0,
-            true
-        )
-    }
 
     Column(
         modifier = Modifier
@@ -99,7 +89,7 @@ fun InputForm(
                     color = Color.Gray,
                     shape = RoundedCornerShape(8.dp)
                   )
-                  .clickable { timePickerDialog.show() },
+                  .clickable { showTimePicker(context, onTimeClick)  },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -123,7 +113,7 @@ fun InputForm(
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                   )
                   .clickable {
-                    timePickerDialog.show()
+                      showTimePicker(context,onTimeClick)
                   },
                 contentAlignment = Alignment.Center
             ) {
@@ -162,7 +152,6 @@ fun InputForm(
         Button(
             modifier = Modifier.padding(2.dp),
             onClick = {
-                timePickerDialog.dismiss()
                 onClick(name.value, dosage.value, isRepeat.value, intervalTime.value)
             },
             colors = ButtonDefaults.buttonColors(
@@ -179,7 +168,30 @@ fun InputForm(
         }
     }
 }
+fun showTimePicker(context: Context, onTimeClick: (String) -> Unit) {
+    val now = Calendar.getInstance()
+    TimePickerDialog(
+        context,
+        { _, hourOfDay, minute ->
+            val selected = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, hourOfDay)
+                set(Calendar.MINUTE, minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
 
+            if (selected.timeInMillis < now.timeInMillis) {
+                Toast.makeText(context, "Cannot select a past time!", Toast.LENGTH_SHORT).show()
+            } else {
+                val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
+                onTimeClick(formattedTime)
+            }
+        },
+        now.get(Calendar.HOUR_OF_DAY),
+        now.get(Calendar.MINUTE),
+        true
+    ).show()
+}
 @Preview
 @Composable
 fun InputFormPreview(){
