@@ -33,7 +33,7 @@
             android:name=".presentation.AlarmService"
             android:foregroundServiceType="mediaPlayback"
         android:exported="false" />
-        <receiver android:name=".presentation.ReminderReceiver"
+        <receiver android:name=".presentation.ui.ReminderReceiver"
             android:exported="false"
             android:enabled="true"/>
     </application>

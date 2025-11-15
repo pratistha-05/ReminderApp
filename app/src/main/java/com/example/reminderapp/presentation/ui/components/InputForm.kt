@@ -1,4 +1,4 @@
-package com.example.reminderapp.presentation.components
+package com.example.reminderapp.presentation.ui.components
 
 import android.app.TimePickerDialog
 import android.content.Context

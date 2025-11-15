@@ -1,4 +1,4 @@
-package com.example.reminderapp.presentation.components
+package com.example.reminderapp.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement

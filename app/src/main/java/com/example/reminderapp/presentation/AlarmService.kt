@@ -9,9 +9,9 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.example.reminderapp.R
 import com.example.reminderapp.data.local.Reminder
+import com.example.reminderapp.presentation.ui.ReminderReceiver
 import com.example.reminderapp.utils.REMINDER
 import com.example.reminderapp.utils.channelId
-import com.example.reminderapp.utils.channelName
 import com.google.gson.Gson
 
 class AlarmService : Service() {

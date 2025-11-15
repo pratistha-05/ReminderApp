@@ -1,4 +1,4 @@
-package com.example.reminderapp.presentation.components
+package com.example.reminderapp.presentation.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
@@ -28,8 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.reminderapp.data.local.Reminder
-import com.example.reminderapp.presentation.ReminderViewModel
-import com.example.reminderapp.presentation.cancelAlarm
+import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
+import com.example.reminderapp.utils.cancelAlarm
 import com.example.reminderapp.utils.convertMillisToTime
 @Composable
 fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context) {

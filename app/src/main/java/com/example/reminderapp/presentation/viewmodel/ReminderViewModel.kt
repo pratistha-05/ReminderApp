@@ -1,4 +1,4 @@
-package com.example.reminderapp.presentation
+package com.example.reminderapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

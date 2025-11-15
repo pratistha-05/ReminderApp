@@ -10,5 +10,5 @@ data class Reminder(
     @PrimaryKey(autoGenerate = false)
     val timeinMillis:Long,
     var isTaken:Boolean,
-    val isRepeat:Boolean
+    val isRepeat:Boolean,
 )

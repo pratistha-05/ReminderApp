@@ -1,4 +1,4 @@
-package com.example.reminderapp.presentation
+package com.example.reminderapp.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -7,8 +7,8 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import com.example.reminderapp.utils.REMINDER
 import com.example.reminderapp.data.local.Reminder
+import com.example.reminderapp.presentation.ui.ReminderReceiver
 import com.google.gson.Gson
 
 
@@ -40,7 +40,7 @@ fun alarmSetup(context: Context, reminder: Reminder) {
 
 
 fun cancelAlarm(context: Context, reminder: Reminder){
-    val intent= Intent(context,ReminderReceiver::class.java).apply{
+    val intent= Intent(context, ReminderReceiver::class.java).apply{
         putExtra(REMINDER, Gson().toJson(reminder))
     }
 
@@ -64,7 +64,7 @@ fun setUpPeriodicAlarm(context: Context, reminder: Reminder, intervalTime: Long)
         }
     }
 
-    val intent= Intent(context,ReminderReceiver::class.java).apply{
+    val intent= Intent(context, ReminderReceiver::class.java).apply{
         putExtra(REMINDER, Gson().toJson(reminder))
     }
 

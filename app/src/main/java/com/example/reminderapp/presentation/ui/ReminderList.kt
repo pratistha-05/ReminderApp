@@ -1,7 +1,5 @@
-package com.example.reminderapp.presentation
+package com.example.reminderapp.presentation.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -36,9 +34,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reminderapp.data.local.Reminder
-import com.example.reminderapp.presentation.components.InputForm
-import com.example.reminderapp.presentation.components.ReminderItem
-import com.example.reminderapp.utils.convertTimeToMillis
+import com.example.reminderapp.presentation.ui.components.InputForm
+import com.example.reminderapp.presentation.ui.components.ReminderItem
+import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
+import com.example.reminderapp.utils.alarmSetup
+import com.example.reminderapp.utils.convertDateTimeToMillis
+import com.example.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -71,9 +72,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         val reminder = Reminder(
           name = name,
           dosage = dosage,
-          timeinMillis = convertTimeToMillis(selectedTime.value),
+          timeinMillis = convertDateTimeToMillis(selectedDate.value, selectedTime.value),
           isTaken = false,
-          isRepeat = isRepeat
+          isRepeat = isRepeat,
+
         )
         viewModel.insert(reminder)
         if (isRepeat && intervalTime > 0)

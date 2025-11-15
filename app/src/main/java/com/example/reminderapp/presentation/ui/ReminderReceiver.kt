@@ -1,4 +1,4 @@
-package com.example.reminderapp.presentation
+package com.example.reminderapp.presentation.ui
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -6,13 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.reminderapp.R
 import com.example.reminderapp.utils.REMINDER
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.domain.useCases.UpdateUseCase
+import com.example.reminderapp.presentation.AlarmService
+import com.example.reminderapp.utils.cancelAlarm
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
