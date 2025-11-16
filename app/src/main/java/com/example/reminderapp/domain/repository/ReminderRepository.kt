@@ -8,5 +8,5 @@ interface  ReminderRepository {
     suspend fun delete(reminder: Reminder)
     suspend fun update(reminder: Reminder)
     fun getAllReminders(): Flow<List<Reminder>>
-
+    fun getRemindersForDate(date: String): Flow<List<Reminder>>
 }

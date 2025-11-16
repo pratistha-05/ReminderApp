@@ -19,4 +19,9 @@ class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepo
     }
 
     override fun getAllReminders(): Flow<List<Reminder>> = reminderDao.getAllReminder()
+
+    override fun getRemindersForDate(date: String): Flow<List<Reminder>> {
+        return reminderDao.getRemindersByDate(date)
+    }
+
 }

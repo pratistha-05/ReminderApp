@@ -11,4 +11,5 @@ data class Reminder(
     val timeinMillis:Long,
     var isTaken:Boolean,
     val isRepeat:Boolean,
+    val date: String,
 )

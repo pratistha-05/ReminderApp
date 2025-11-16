@@ -22,4 +22,7 @@ interface ReminderDao{
 
     @Query("SELECT * FROM Reminder ORDER BY timeInMillis DESC")
     fun getAllReminder(): Flow<List<Reminder>>
+
+    @Query("SELECT * FROM  Reminder WHERE date=:date ORDER BY timeInMillis ASC")
+    fun getRemindersByDate(date: String): Flow<List<Reminder>>
 }

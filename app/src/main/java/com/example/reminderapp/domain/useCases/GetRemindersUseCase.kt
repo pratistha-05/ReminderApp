@@ -4,6 +4,7 @@ import com.example.reminderapp.domain.repository.ReminderRepository
 import javax.inject.Inject
 
 class GetRemindersUseCase @Inject constructor(private val reminderRepository: ReminderRepository) {
-     operator fun invoke() = reminderRepository.getAllReminders()
+     fun getAllReminders() = reminderRepository.getAllReminders()
 
+     fun getRemindersForDate(date: String) = reminderRepository.getRemindersForDate(date)
 }

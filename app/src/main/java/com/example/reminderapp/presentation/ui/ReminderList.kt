@@ -38,7 +38,7 @@ import com.example.reminderapp.presentation.ui.components.InputForm
 import com.example.reminderapp.presentation.ui.components.ReminderItem
 import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.example.reminderapp.utils.alarmSetup
-import com.example.reminderapp.utils.convertDateTimeToMillis
+import com.example.reminderapp.utils.convertTimeToMillis
 import com.example.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -46,7 +46,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
-  val uiState = viewModel.uiState.collectAsState()
+  val list = viewModel.list.collectAsState()
   val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
@@ -72,10 +72,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         val reminder = Reminder(
           name = name,
           dosage = dosage,
-          timeinMillis = convertDateTimeToMillis(selectedDate.value, selectedTime.value),
+          timeinMillis = convertTimeToMillis(selectedTime.value),
           isTaken = false,
           isRepeat = isRepeat,
-
+          date = selectedDate.value.toString(),
         )
         viewModel.insert(reminder)
         if (isRepeat && intervalTime > 0)
@@ -115,14 +115,17 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             items(days) { date ->
-              DateItem(selectedDate,date)
+              DateItem(selectedDate,date,
+                onDateSelect = {
+                viewModel.selectDate(date.toString())
+              })
             }
           }
 
           LazyColumn(
             modifier = Modifier.fillMaxSize()
           ) {
-            items(uiState.value.list) { item ->
+            items(list.value.list) { item ->
               ReminderItem(item = item, viewModel = viewModel, context)
             }
           }
@@ -133,14 +136,17 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun DateItem(selectedDate: MutableState<LocalDate>, date: LocalDate) {
+fun DateItem(selectedDate: MutableState<LocalDate>, date: LocalDate, onDateSelect:()->Unit) {
   val isSelected = selectedDate.value == date
   Box(
     modifier = Modifier
       .height(80.dp)
       .clip(RoundedCornerShape(50))
       .background(if (isSelected) Color(0xFF004D40) else Color.LightGray)
-      .clickable { selectedDate.value = date }
+      .clickable {
+        selectedDate.value = date
+        onDateSelect()
+      }
       .padding(horizontal = 16.dp, vertical = 12.dp),
     contentAlignment = Alignment.Center
   ) {
