@@ -27,15 +27,12 @@ class ReminderViewModel @Inject constructor(
     private val updateUseCase: UpdateUseCase
 ): ViewModel() {
 
-    private val _selectedDate = MutableStateFlow<String>("")
+    private val _selectedDate = MutableStateFlow(LocalDate.now().toString())
     val selectedDate = _selectedDate.asStateFlow()
 
     val list: StateFlow<ReminderUiState> =
         selectedDate
             .flatMapLatest { date ->
-                if (date.isEmpty())
-                    getRemindersUseCase.getAllReminders()
-                else
                     getRemindersUseCase.getRemindersForDate(date)
             }
             .map { ReminderUiState(it) }
