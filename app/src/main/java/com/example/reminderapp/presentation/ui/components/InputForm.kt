@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,19 +18,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,14 +75,21 @@ fun InputForm(
             value = name.value,
             onValueChange = { name.value = it },
             label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xFF004D40),
+                unfocusedBorderColor = Color.Gray,
+                focusedLabelColor = Color(0xFF004D40),
+                cursorColor = Color(0xFF004D40)
+            )
         )
+        Text(text = "Dosage")
 
-        OutlinedTextField(
-            value = dosage.value,
-            onValueChange = { dosage.value = it },
-            label = { Text("Dosage") },
-            modifier = Modifier.fillMaxWidth()
+        DosageCounterRow(
+            dosage = dosage.value.toIntOrNull() ?: 0,
+            onDosageChange = { newValue ->
+                dosage.value = newValue.toString()
+            }
         )
 
         Text(text = "Select Time")
@@ -83,7 +101,6 @@ fun InputForm(
                 modifier = Modifier
                   .weight(1f)
                   .height(50.dp)
-                  .padding(4.dp)
                   .border(
                     width = 1.dp,
                     color = Color.Gray,
@@ -125,8 +142,7 @@ fun InputForm(
         }
         Row(
             modifier = Modifier
-              .fillMaxWidth()
-              .padding(8.dp),
+              .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Repeat Alarm?")
@@ -150,15 +166,15 @@ fun InputForm(
             }
         }
         Button(
-            modifier = Modifier.padding(2.dp),
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
                 onClick(name.value, dosage.value, isRepeat.value, intervalTime.value)
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF006400),
-            )
+                containerColor =  MaterialTheme.colorScheme.tertiaryContainer)
+
         ) {
-            Text(text = "Save", color = Color.White)
+            Text(text = "Add Reminder", color = Color.White)
         }
 
         if (showIntervalDialog.value) {
@@ -192,6 +208,63 @@ fun showTimePicker(context: Context, onTimeClick: (String) -> Unit) {
         true
     ).show()
 }
+
+@Composable
+fun DosageCounterRow(
+    dosage: Int,
+    onDosageChange: (Int) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(0.6f)
+            .height(50.dp)
+            .background(Color.White, shape = RoundedCornerShape(8.dp))
+            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            IconButton(
+                onClick = { if (dosage > 0) onDosageChange(dosage - 1) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = "Decrease",
+                    tint =  MaterialTheme.colorScheme.tertiaryContainer
+                )
+            }
+
+            VerticalDivider()
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = dosage.toString(),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            VerticalDivider()
+
+            IconButton(
+                onClick = { onDosageChange(dosage + 1) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Increase",
+                    tint =  MaterialTheme.colorScheme.tertiaryContainer
+                )
+            }
+        }
+    }
+}
+
+
 @Preview
 @Composable
 fun InputFormPreview(){
