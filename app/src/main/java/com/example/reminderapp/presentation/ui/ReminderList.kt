@@ -26,11 +26,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.ui.components.DateRowItem
+import com.example.reminderapp.presentation.ui.components.EmptyReminderState
 import com.example.reminderapp.presentation.ui.components.InputForm
 import com.example.reminderapp.presentation.ui.components.ReminderItem
 import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
@@ -44,6 +46,7 @@ import java.time.LocalDate
 @Composable
 fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val list = viewModel.list.collectAsState()
+
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -89,7 +92,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text("Reminders") },
+                    title = { Text("Reminders", color = Color.Black) },
                     actions = {
                         IconButton(
                             onClick = { scope.launch { sheetState.show() } }
@@ -120,11 +123,15 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         }
                     }
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(list.value.list) { item ->
-                            ReminderItem(item = item, viewModel = viewModel, context)
+                    if (list.value.list.isNullOrEmpty()) {
+                        EmptyReminderState()
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(list.value.list) { item ->
+                                ReminderItem(item = item, viewModel = viewModel, context)
+                            }
                         }
                     }
                 }

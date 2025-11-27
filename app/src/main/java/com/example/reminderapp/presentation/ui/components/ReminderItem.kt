@@ -2,6 +2,7 @@ package com.example.reminderapp.presentation.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,7 +44,7 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
             .shadow(4.dp, RoundedCornerShape(25))
             .background(
                 color = if (item.isTaken)
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                    MaterialTheme.colorScheme.tertiary
                 else
                     MaterialTheme.colorScheme.onSurface,
             )
@@ -52,61 +53,81 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
     ) {
 
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 12.dp)
         ) {
+
             Text(
                 text = item.name,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = Color.Black
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.Opacity,
-                    contentDescription = "Dosage",
-                    tint = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.size(14.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = item.dosage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(18.dp)
+            ) {
 
-                Spacer(modifier = Modifier.width(26.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Opacity,
+                        contentDescription = "Dosage",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "${item.dosage} mg",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
-                Icon(
-                    imageVector = if (item.isTaken) Icons.Default.Alarm else Icons.Outlined.Alarm,
-                    contentDescription = "Time",
-                    tint = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.size(14.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = convertMillisToTime(item.timeinMillis),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = if (item.isTaken) Icons.Filled.Alarm else Icons.Outlined.Alarm,
+                        contentDescription = "Time",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = convertMillisToTime(item.timeinMillis),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = if (item.isRepeat) "On Repeat" else "One-Time",
+                text = if (item.isRepeat) "Repeats Daily" else "One-Time",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.Black
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
             )
         }
+
 
         IconButton(
             onClick = {
                 cancelAlarm(context, item)
                 viewModel.delete(item)
-            }
+            },
+            modifier = Modifier.align(Alignment.Top) // cleaner UI
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
@@ -115,4 +136,4 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
             )
         }
     }
-}
+    }
