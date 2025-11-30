@@ -35,11 +35,11 @@ class ReminderViewModel @Inject constructor(
             .flatMapLatest { date ->
                     getRemindersUseCase.getRemindersForDate(date)
             }
-            .map { ReminderUiState(it) }
+            .map { ReminderUiState(list = it, isLoading = false) }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(5000),
-                ReminderUiState()
+                ReminderUiState(isLoading = true)
             )
 
     fun selectDate(date: String) {
@@ -60,5 +60,6 @@ class ReminderViewModel @Inject constructor(
     }
 }
 data class ReminderUiState(
-    val list: List<Reminder> = emptyList()
+    val list: List<Reminder> = emptyList(),
+    val isLoading: Boolean = true
 )

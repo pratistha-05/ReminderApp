@@ -1,6 +1,7 @@
 package com.example.reminderapp.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -25,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -48,7 +51,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    var selectedTime = remember { mutableStateOf("") }
+    val selectedTime = remember { mutableStateOf("") }
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     val today = LocalDate.now()
     val days = remember {
@@ -65,7 +68,19 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                     selectedTime.value = pickedTime
                 }
             ) { name, dosage, isRepeat, intervalTime ->
-                //TODO: validation
+                if (name.isBlank()) {
+                    return@InputForm
+                }
+                if (dosage.isBlank()) {
+                    return@InputForm
+                }
+                if (selectedTime.value.isEmpty()) {
+                    return@InputForm
+                }
+                if (isRepeat && intervalTime <= 0) {
+                    return@InputForm
+                }
+
                 val reminder = Reminder(
                     name = name,
                     dosage = dosage,
@@ -75,10 +90,16 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                     date = selectedDate.value.toString(),
                 )
                 viewModel.insert(reminder)
-                if (isRepeat && intervalTime > 0)
-                    setUpPeriodicAlarm(context, reminder, intervalTime)
-                else
-                    alarmSetup(context, reminder)
+
+                try {
+                    if (isRepeat && intervalTime > 0)
+                        setUpPeriodicAlarm(context, reminder, intervalTime)
+                    else
+                        alarmSetup(context, reminder)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
                 scope.launch {
                     selectedTime.value = ""
                     sheetState.hide()
@@ -120,11 +141,31 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         }
                     }
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(list.value.list) { item ->
-                            ReminderItem(item = item, viewModel = viewModel, context)
+                    when {
+                        list.value.isLoading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        list.value.list.isEmpty() -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("No reminders for this date")
+                            }
+                        }
+                        else -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                items(list.value.list) { item ->
+                                    ReminderItem(item = item, viewModel = viewModel, context)
+                                }
+                            }
                         }
                     }
                 }
@@ -132,6 +173,3 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         )
     }
 }
-
-
-
