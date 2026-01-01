@@ -1,8 +1,10 @@
 package com.example.reminderapp.presentation.ui.components
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.IconButton
@@ -20,6 +23,7 @@ import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.Medication
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,8 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.reminderapp.R
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.example.reminderapp.utils.cancelAlarm
@@ -44,18 +50,24 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
             .shadow(4.dp, RoundedCornerShape(25))
             .background(
                 color = if (item.isTaken)
-                    MaterialTheme.colorScheme.tertiary
+                    MaterialTheme.colorScheme.onSurface
                 else
-                    MaterialTheme.colorScheme.onSurface,
+                    MaterialTheme.colorScheme.tertiary,
             )
-            .padding(16.dp),
+            .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.meds_icon),
+                contentDescription = "Medicine",
+                modifier = Modifier.size(50.dp)
+            )
 
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 12.dp)
+                .padding(horizontal = 12.dp)
         ) {
 
             Text(
@@ -113,12 +125,13 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = if (item.isRepeat) "Repeats Daily" else "One-Time",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-            )
+            if(item.isRepeat) {
+                Text(
+                    text = "Repeats Daily",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
 
 
@@ -136,4 +149,4 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
             )
         }
     }
-    }
+}

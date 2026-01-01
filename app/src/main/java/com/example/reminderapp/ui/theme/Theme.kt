@@ -16,8 +16,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    onSurface = Color(0xFFE5F1E8),
-    tertiaryContainer=Color(0xFF156519)
+    onSurface = Color(0xFFE7F2F1),
+    tertiaryContainer=Color(0xFF07A996)
     )
 
 private val LightColorScheme = lightColorScheme(
@@ -26,10 +26,10 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink80,
     background = Color(0xFFFFFBFE),
     onPrimary = Color.White,
-    onSecondary = Color.White,
+    onSecondary = Color.Black,
     onTertiary = Color.White,
-    onSurface = Color(0xFFE5F1E8),
-    tertiaryContainer=Color(0xFF13642E)
+    onSurface = Color(0xFFE7F2F1),
+    tertiaryContainer=Color(0xFF07A996)
 
 )
 

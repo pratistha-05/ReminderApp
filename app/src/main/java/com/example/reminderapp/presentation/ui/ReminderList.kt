@@ -20,6 +20,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.ui.components.DateRowItem
+import com.example.reminderapp.presentation.ui.components.EmptyReminderState
 import com.example.reminderapp.presentation.ui.components.InputForm
 import com.example.reminderapp.presentation.ui.components.ReminderItem
 import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
@@ -110,7 +112,11 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text("Reminders") },
+                    title = {
+                        Text(
+                            "Reminders", color = MaterialTheme.colorScheme.secondary
+                        )
+                    },
                     actions = {
                         IconButton(
                             onClick = { scope.launch { sheetState.show() } }
@@ -123,13 +129,13 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
             content = { paddingValues ->
                 Column(
                     modifier = Modifier
-                      .padding(paddingValues)
-                      .fillMaxSize()
+                        .padding(paddingValues)
+                        .fillMaxSize()
                 ) {
                     LazyRow(
                         modifier = Modifier
-                          .fillMaxWidth()
-                          .padding(8.dp),
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(days) { date ->
@@ -150,14 +156,11 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                                 CircularProgressIndicator()
                             }
                         }
+
                         list.value.list.isEmpty() -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("No reminders for this date")
-                            }
+                            EmptyReminderState()
                         }
+
                         else -> {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize()

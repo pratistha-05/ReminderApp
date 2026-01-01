@@ -233,7 +233,6 @@ fun DosageCounterRow(
                 Icon(
                     imageVector = Icons.Default.Remove,
                     contentDescription = "Decrease",
-                    tint =  MaterialTheme.colorScheme.tertiaryContainer
                 )
             }
 
@@ -257,7 +256,6 @@ fun DosageCounterRow(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Increase",
-                    tint =  MaterialTheme.colorScheme.tertiaryContainer
                 )
             }
         }

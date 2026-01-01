@@ -25,7 +25,7 @@ fun DateRowItem(selectedDate: MutableState<LocalDate>, date: LocalDate, onDateSe
         modifier = Modifier
             .height(80.dp)
             .clip(RoundedCornerShape(50))
-            .background(if (isSelected) Color(0xFF004D40) else Color.LightGray)
+            .background(if (isSelected) MaterialTheme.colorScheme.tertiaryContainer else Color.LightGray)
             .clickable {
                 selectedDate.value = date
                 onDateSelect()
