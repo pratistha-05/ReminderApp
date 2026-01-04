@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -132,20 +133,29 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    LazyRow(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        items(days) { date ->
-                            DateRowItem(
-                                selectedDate, date,
-                                onDateSelect = {
-                                    viewModel.selectDate(date.toString())
-                                })
+                        LazyRow(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(days) { date ->
+                                DateRowItem(
+                                    selectedDate,
+                                    date,
+                                    onDateSelect = {
+                                        viewModel.selectDate(date.toString())
+                                    }
+                                )
+                            }
                         }
                     }
+
 
                     when {
                         list.value.isLoading -> {

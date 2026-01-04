@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -33,7 +34,7 @@ fun TimeIntervalPickerDialog(
   if (showDialog.value) {
     AlertDialog(
       onDismissRequest = { showDialog.value = false },
-      title = { Text("Select Interval") },
+      title = { Text("Select Interval",color = MaterialTheme.colorScheme.secondary) },
       text = {
 
         Column {
@@ -57,9 +58,9 @@ fun TimeIntervalPickerDialog(
             valueRange = 1f..15f,
             steps = 13,
             colors = SliderDefaults.colors(
-              thumbColor = Color(0xFF006400),
-              activeTrackColor = Color(0xFF006400),
-              inactiveTrackColor = Color(0xFFC5E7C6),
+              thumbColor = MaterialTheme.colorScheme.tertiaryContainer,
+              activeTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
+              inactiveTrackColor = Color(0xFFC5E7DC),
             )
           )
           Text(
@@ -76,7 +77,7 @@ fun TimeIntervalPickerDialog(
             onIntervalSelected(intervalInMillis)
           },
           colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF006400)
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
           )
         ) {
           Text("OK")
