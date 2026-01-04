@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -45,21 +44,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.reminderapp.utils.convertDateTimeToMillis
+import java.time.LocalDate
 import java.util.Calendar
 @Composable
 fun InputForm(
+    selectedDate: LocalDate,
     time: String,
     onTimeClick: (String) -> Unit,
     onClick: (String, String, Boolean, Long) -> Unit
 ) {
 
     val name = remember { mutableStateOf("") }
-    val dosage = remember { mutableStateOf("") }
+    val dosage = remember { mutableStateOf(0) }
     val context = LocalContext.current
     val isRepeat = remember { mutableStateOf(false) }
     val showIntervalDialog = remember { mutableStateOf(false) }
     val intervalTime = remember { mutableStateOf(0L) }
-
     Column(
         modifier = Modifier
           .fillMaxSize()
@@ -87,9 +88,9 @@ fun InputForm(
         Text(text = "Dosage")
 
         DosageCounterRow(
-            dosage = dosage.value.toIntOrNull() ?: 0,
+            dosage = dosage.value,
             onDosageChange = { newValue ->
-                dosage.value = newValue.toString()
+                dosage.value = newValue
             }
         )
 
@@ -107,7 +108,7 @@ fun InputForm(
                     color = Color.Gray,
                     shape = RoundedCornerShape(8.dp)
                   )
-                  .clickable { showTimePicker(context, onTimeClick)  },
+                  .clickable { showTimePicker(context, onTimeClick,selectedDate)  },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -131,7 +132,7 @@ fun InputForm(
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                   )
                   .clickable {
-                      showTimePicker(context,onTimeClick)
+                      showTimePicker(context,onTimeClick, selectedDate)
                   },
                 contentAlignment = Alignment.Center
             ) {
@@ -169,7 +170,11 @@ fun InputForm(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                onClick(name.value, dosage.value, isRepeat.value, intervalTime.value)
+                onClick(name.value, dosage.value.toString(), isRepeat.value, intervalTime.value)
+                name.value = ""
+                dosage.value = 0
+                isRepeat.value = false
+                intervalTime.value = 0L
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor =  MaterialTheme.colorScheme.tertiaryContainer)
@@ -185,23 +190,36 @@ fun InputForm(
         }
     }
 }
-fun showTimePicker(context: Context, onTimeClick: (String) -> Unit) {
+fun showTimePicker(
+    context: Context,
+    onTimeClick: (String) -> Unit,
+    selectedDate: LocalDate,
+    ) {
+    val nowMillis = System.currentTimeMillis()
     val now = Calendar.getInstance()
+
     TimePickerDialog(
         context,
         { _, hourOfDay, minute ->
-            val selected = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, hourOfDay)
-                set(Calendar.MINUTE, minute)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }
 
-            if (selected.timeInMillis < now.timeInMillis) {
-                Toast.makeText(context, "Cannot select a past time!", Toast.LENGTH_SHORT).show()
+            val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
+
+            val selectedMillis = convertDateTimeToMillis(
+                selectedDate,
+                formattedTime
+            )
+
+            if (selectedMillis < nowMillis) {
+                Toast.makeText(
+                    context,
+                    "Cannot select a past time!",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
-                Log.d("TimePicker", "Selected time: ${selected.timeInMillis} ")
+                Log.d(
+                    "TimePicker",
+                    "Selected date-time millis: $selectedMillis"
+                )
                 onTimeClick(formattedTime)
             }
         },
@@ -262,17 +280,4 @@ fun DosageCounterRow(
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun InputFormPreview(){
-  InputForm(
-      time = "5:00",
-      onTimeClick = { },
-      onClick = { _, _, _, _ ->
-
-      }
-  )
 }

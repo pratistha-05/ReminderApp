@@ -66,6 +66,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         modifier = Modifier.fillMaxWidth(),
         sheetContent = {
             InputForm(
+                selectedDate.value,
                 time = selectedTime.value,
                 onTimeClick = { pickedTime ->
                     selectedTime.value = pickedTime
