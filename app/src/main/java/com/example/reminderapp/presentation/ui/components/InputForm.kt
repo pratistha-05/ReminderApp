@@ -2,6 +2,7 @@ package com.example.reminderapp.presentation.ui.components
 
 import android.app.TimePickerDialog
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -200,6 +201,7 @@ fun showTimePicker(context: Context, onTimeClick: (String) -> Unit) {
                 Toast.makeText(context, "Cannot select a past time!", Toast.LENGTH_SHORT).show()
             } else {
                 val formattedTime = String.format("%02d:%02d", hourOfDay, minute)
+                Log.d("TimePicker", "Selected time: ${selected.timeInMillis} ")
                 onTimeClick(formattedTime)
             }
         },

@@ -41,7 +41,7 @@ import com.example.reminderapp.presentation.ui.components.InputForm
 import com.example.reminderapp.presentation.ui.components.ReminderItem
 import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.example.reminderapp.utils.alarmSetup
-import com.example.reminderapp.utils.convertTimeToMillis
+import com.example.reminderapp.utils.convertDateTimeToMillis
 import com.example.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -87,7 +87,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 val reminder = Reminder(
                     name = name,
                     dosage = dosage,
-                    timeinMillis = convertTimeToMillis(selectedTime.value),
+                    timeinMillis = convertDateTimeToMillis(
+                        selectedDate.value,
+                        selectedTime.value
+                    ),
                     isTaken = false,
                     isRepeat = isRepeat,
                     date = selectedDate.value.toString(),

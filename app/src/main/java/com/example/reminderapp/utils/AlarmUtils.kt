@@ -26,6 +26,7 @@ fun alarmSetup(context: Context, reminder: Reminder) {
     val intent = Intent(context, ReminderReceiver::class.java).apply {
         putExtra(REMINDER, Gson().toJson(reminder))
     }
+    Log.e("ReminderApp", "time: ${reminder.timeinMillis}")
 
     val pendingIntent = PendingIntent.getBroadcast(context, reminder.timeinMillis.toInt(), intent, PendingIntent.FLAG_IMMUTABLE)
 

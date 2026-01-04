@@ -6,18 +6,23 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-fun convertTimeToMillis(time: String): Long {
-  val timeParts = time.split(":")
-  val hour = timeParts[0].toInt()
-  val minute = timeParts[1].toInt()
+fun convertDateTimeToMillis(
+    date: LocalDate,
+    time: String
+): Long {
+    val (hour, minute) = time.split(":").map { it.toInt() }
 
-  val calendar = Calendar.getInstance().apply {
-    set(Calendar.HOUR_OF_DAY, hour)
-    set(Calendar.MINUTE, minute)
-    set(Calendar.SECOND, 0)
-    set(Calendar.MILLISECOND, 0)
-  }
-  return calendar.timeInMillis
+    val calendar = Calendar.getInstance().apply {
+        set(Calendar.YEAR, date.year)
+        set(Calendar.MONTH, date.monthValue - 1) // Calendar is 0-based
+        set(Calendar.DAY_OF_MONTH, date.dayOfMonth)
+        set(Calendar.HOUR_OF_DAY, hour)
+        set(Calendar.MINUTE, minute)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
+
+    return calendar.timeInMillis
 }
 
 
