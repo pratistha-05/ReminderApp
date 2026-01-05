@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.reminderapp.R
+import com.pratistha.reminderapp.R
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.example.reminderapp.utils.cancelAlarm

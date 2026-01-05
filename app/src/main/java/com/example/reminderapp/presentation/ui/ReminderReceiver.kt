@@ -8,7 +8,7 @@ import android.media.MediaPlayer
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.example.reminderapp.R
+import com.pratistha.reminderapp.R
 import com.example.reminderapp.utils.REMINDER
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.domain.useCases.UpdateUseCase

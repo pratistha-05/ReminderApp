@@ -7,7 +7,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.example.reminderapp.R
+import com.pratistha.reminderapp.R
 import com.example.reminderapp.data.local.Reminder
 import com.example.reminderapp.presentation.ui.ReminderReceiver
 import com.example.reminderapp.utils.REMINDER

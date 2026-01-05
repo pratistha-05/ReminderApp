@@ -9,14 +9,14 @@ plugins {
 }
 
 android {
-    namespace = "com.example.reminderapp"
+    namespace = "com.pratistha.reminderapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.reminderapp"
+        applicationId = "com.pratistha.reminderapp"
         minSdk = 26
-        targetSdk = 33
-        versionCode = 1
+        targetSdk = 35
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
