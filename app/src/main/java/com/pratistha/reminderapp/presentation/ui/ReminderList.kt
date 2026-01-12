@@ -40,9 +40,9 @@ import com.pratistha.reminderapp.presentation.ui.components.EmptyReminderState
 import com.pratistha.reminderapp.presentation.ui.components.InputForm
 import com.pratistha.reminderapp.presentation.ui.components.ReminderItem
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
-import com.example.reminderapp.utils.alarmSetup
+import com.pratistha.reminderapp.utils.alarmSetup
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
-import com.example.reminderapp.utils.setUpPeriodicAlarm
+import com.pratistha.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 

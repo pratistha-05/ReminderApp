@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
-import com.example.reminderapp.utils.cancelAlarm
+import com.pratistha.reminderapp.utils.cancelAlarm
 import com.pratistha.reminderapp.utils.convertMillisToTime
 
 @Composable
