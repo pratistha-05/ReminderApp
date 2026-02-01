@@ -8,17 +8,17 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.pratistha.reminderapp.data.local.dao.ReminderDao
 
-@Database(entities = [Reminder::class], version = 2)
+@Database(entities = [Reminder::class], version = 3)
 abstract class ReminderDatabase : RoomDatabase() {
 
     abstract fun getReminderDao(): ReminderDao
 
     companion object {
         //migration for adding date variable in dao
-        val MIGRATION_1_2 = object : Migration(1, 2) {
+        val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "ALTER TABLE Reminder ADD COLUMN date TEXT NOT NULL DEFAULT ''"
+                    "ALTER TABLE Reminder ADD COLUMN frequency TEXT NOT NULL DEFAULT ''"
                 )
             }
         }
@@ -29,7 +29,7 @@ abstract class ReminderDatabase : RoomDatabase() {
                 ReminderDatabase::class.java,
                 "reminder"
             )
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
                 .build()
     }
 }

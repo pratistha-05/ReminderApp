@@ -72,7 +72,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 onTimeClick = { pickedTime ->
                     selectedTime.value = pickedTime
                 }
-            ) { name, dosage, isRepeat, intervalTime, frequency ->
+            ) { name, dosage, isRepeat, frequency ->
                 if (name.isBlank()) {
                     return@InputForm
                 }
@@ -82,7 +82,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 if (selectedTime.value.isEmpty()) {
                     return@InputForm
                 }
-                if (isRepeat && intervalTime <= 0) {
+                if (isRepeat) {
                     return@InputForm
                 }
 
@@ -101,8 +101,8 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 viewModel.insert(reminder)
 
                 try {
-                    if (isRepeat && intervalTime > 0)
-                        setUpPeriodicAlarm(context, reminder, intervalTime)
+                    if (isRepeat )
+//                        setUpPeriodicAlarm(context, reminder)
                     else
                         alarmSetup(context, reminder)
                 } catch (e: Exception) {

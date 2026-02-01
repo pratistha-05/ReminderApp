@@ -54,7 +54,7 @@ fun InputForm(
     selectedDate: LocalDate,
     time: String,
     onTimeClick: (String) -> Unit,
-    onClick: (String, String, Boolean, Long, Frequency) -> Unit
+    onClick: (String, String, Boolean, Frequency) -> Unit
 ) {
 
     val name = remember { mutableStateOf("") }
@@ -62,9 +62,7 @@ fun InputForm(
     val context = LocalContext.current
     val isRepeat = remember { mutableStateOf(false) }
     val showIntervalDialog = remember { mutableStateOf(false) }
-    val intervalTime = remember { mutableStateOf(0L) }
-
-    val intervalTime = remember { mutableStateOf(0L) }
+//    val intervalTime = remember { mutableStateOf(0L) }
 
     var selectedFrequency by remember { mutableStateOf(Frequency.Daily) }
 
@@ -72,13 +70,13 @@ fun InputForm(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             text = "Enter details",
             style = TextStyle(fontSize = 20.sp),
             modifier = Modifier.padding(top = 20.dp)
         )
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = name.value,
@@ -92,7 +90,10 @@ fun InputForm(
                 cursorColor = Color(0xFF004D40)
             )
         )
+        Spacer(modifier = Modifier.height(12.dp))
+
         Text(text = "Dosage")
+        Spacer(modifier = Modifier.height(4.dp))
 
         DosageCounterRow(
             dosage = dosage.value,
@@ -100,8 +101,10 @@ fun InputForm(
                 dosage.value = newValue
             }
         )
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(text = "Select Time")
+        Spacer(modifier = Modifier.height(4.dp))
 
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -163,42 +166,20 @@ fun InputForm(
         }
 
         if (isRepeat.value) {
-            Text(text = "Frequency")
-            Frequency.values().forEach { option ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { selectedFrequency = option }
-                ) {
-                    RadioButton(
-                        selected = (option == selectedFrequency),
-                        onClick = { selectedFrequency = option }
-                    )
-                    Text(text = option.value, modifier = Modifier.padding(start = 8.dp))
-                }
-            }
-
-            Button(
-                onClick = { showIntervalDialog.value = true }, enabled = isRepeat.value,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                border = BorderStroke(1.dp, Color.Black),
-                modifier = Modifier.padding(2.dp)
-            ) {
-                Text(text = "Set Interval: ${if (intervalTime.value > 0) intervalTime.value / 1000 / 60 else "Not Set"} mins")
-            }
+            FrequencyDropdown(
+                selected = selectedFrequency,
+                onSelected = { selectedFrequency = it }
+            )
         }
+        Spacer(modifier = Modifier.height(10.dp))
+
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                onClick(name.value, dosage.value.toString(), isRepeat.value, intervalTime.value, selectedFrequency)
+                onClick(name.value, dosage.value.toString(), isRepeat.value, selectedFrequency)
                 name.value = ""
                 dosage.value = 0
                 isRepeat.value = false
-                intervalTime.value = 0L
                 selectedFrequency = Frequency.Daily
             },
             colors = ButtonDefaults.buttonColors(
@@ -209,11 +190,11 @@ fun InputForm(
             Text(text = "Add Reminder", color = Color.White)
         }
 
-        if (showIntervalDialog.value) {
-            TimeIntervalPickerDialog(showIntervalDialog) { selectedInterval ->
-                intervalTime.value = selectedInterval
-            }
-        }
+//        if (showIntervalDialog.value) {
+//            TimeIntervalPickerDialog(showIntervalDialog) { selectedInterval ->
+//                intervalTime.value = selectedInterval
+//            }
+//        }
     }
 }
 
