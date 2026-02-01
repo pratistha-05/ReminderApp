@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -44,14 +45,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
+import com.pratistha.reminderapp.data.local.Frequency
 import java.time.LocalDate
 import java.util.Calendar
+
 @Composable
 fun InputForm(
     selectedDate: LocalDate,
     time: String,
     onTimeClick: (String) -> Unit,
-    onClick: (String, String, Boolean, Long) -> Unit
+    onClick: (String, String, Boolean, Long, Frequency) -> Unit
 ) {
 
     val name = remember { mutableStateOf("") }
@@ -60,15 +63,20 @@ fun InputForm(
     val isRepeat = remember { mutableStateOf(false) }
     val showIntervalDialog = remember { mutableStateOf(false) }
     val intervalTime = remember { mutableStateOf(0L) }
+
+    val intervalTime = remember { mutableStateOf(0L) }
+
+    var selectedFrequency by remember { mutableStateOf(Frequency.Daily) }
+
     Column(
         modifier = Modifier
-          .fillMaxSize()
-          .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             text = "Enter details",
-            style= TextStyle(fontSize = 20.sp),
+            style = TextStyle(fontSize = 20.sp),
             modifier = Modifier.padding(top = 20.dp)
         )
 
@@ -100,14 +108,14 @@ fun InputForm(
         ) {
             Box(
                 modifier = Modifier
-                  .weight(1f)
-                  .height(50.dp)
-                  .border(
-                    width = 1.dp,
-                    color = Color.Gray,
-                    shape = RoundedCornerShape(8.dp)
-                  )
-                  .clickable { showTimePicker(context, onTimeClick,selectedDate)  },
+                    .weight(1f)
+                    .height(50.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.Gray,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clickable { showTimePicker(context, onTimeClick, selectedDate) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -122,17 +130,17 @@ fun InputForm(
             )
             Box(
                 modifier = Modifier
-                  .weight(1f)
-                  .height(50.dp)
-                  .padding(4.dp)
-                  .border(
-                    width = 1.dp,
-                    color = Color.Gray,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-                  )
-                  .clickable {
-                      showTimePicker(context,onTimeClick, selectedDate)
-                  },
+                    .weight(1f)
+                    .height(50.dp)
+                    .padding(4.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.Gray,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .clickable {
+                        showTimePicker(context, onTimeClick, selectedDate)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -143,7 +151,7 @@ fun InputForm(
         }
         Row(
             modifier = Modifier
-              .fillMaxWidth(),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "Repeat Alarm?")
@@ -153,7 +161,24 @@ fun InputForm(
                 onCheckedChange = { isRepeat.value = it }
             )
         }
+
         if (isRepeat.value) {
+            Text(text = "Frequency")
+            Frequency.values().forEach { option ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedFrequency = option }
+                ) {
+                    RadioButton(
+                        selected = (option == selectedFrequency),
+                        onClick = { selectedFrequency = option }
+                    )
+                    Text(text = option.value, modifier = Modifier.padding(start = 8.dp))
+                }
+            }
+
             Button(
                 onClick = { showIntervalDialog.value = true }, enabled = isRepeat.value,
                 colors = ButtonDefaults.buttonColors(
@@ -169,14 +194,16 @@ fun InputForm(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                onClick(name.value, dosage.value.toString(), isRepeat.value, intervalTime.value)
+                onClick(name.value, dosage.value.toString(), isRepeat.value, intervalTime.value, selectedFrequency)
                 name.value = ""
                 dosage.value = 0
                 isRepeat.value = false
                 intervalTime.value = 0L
+                selectedFrequency = Frequency.Daily
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor =  MaterialTheme.colorScheme.tertiaryContainer)
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            )
 
         ) {
             Text(text = "Add Reminder", color = Color.White)
@@ -189,11 +216,12 @@ fun InputForm(
         }
     }
 }
+
 fun showTimePicker(
     context: Context,
     onTimeClick: (String) -> Unit,
     selectedDate: LocalDate,
-    ) {
+) {
     val nowMillis = System.currentTimeMillis()
     val now = Calendar.getInstance()
 

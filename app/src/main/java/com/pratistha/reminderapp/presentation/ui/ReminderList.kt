@@ -45,6 +45,7 @@ import com.pratistha.reminderapp.utils.convertDateTimeToMillis
 import com.pratistha.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import com.pratistha.reminderapp.data.local.Frequency
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -71,7 +72,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 onTimeClick = { pickedTime ->
                     selectedTime.value = pickedTime
                 }
-            ) { name, dosage, isRepeat, intervalTime ->
+            ) { name, dosage, isRepeat, intervalTime, frequency ->
                 if (name.isBlank()) {
                     return@InputForm
                 }
@@ -94,6 +95,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                     ),
                     isTaken = false,
                     isRepeat = isRepeat,
+                    frequency = frequency.value,
                     date = selectedDate.value.toString(),
                 )
                 viewModel.insert(reminder)

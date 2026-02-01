@@ -121,9 +121,9 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if(item.isRepeat) {
+                if(item.isRepeat) {
                 Text(
-                    text = "Repeats Daily",
+                    text = "Repeats ${item.frequency}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                 )
