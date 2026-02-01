@@ -82,31 +82,39 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 if (selectedTime.value.isEmpty()) {
                     return@InputForm
                 }
-                if (isRepeat) {
-                    return@InputForm
+                val daysToSchedule = if (isRepeat) {
+                    when (frequency) {
+                        Frequency.Daily -> 0..6
+                        Frequency.Alternate -> 0..6 step 2
+                        else -> 0..0
+                    }
+                } else {
+                    0..0
                 }
 
-                val reminder = Reminder(
-                    name = name,
-                    dosage = dosage,
-                    timeinMillis = convertDateTimeToMillis(
-                        selectedDate.value,
+                for (i in daysToSchedule) {
+                    val dateForReminder = selectedDate.value.plusDays(i.toLong())
+                    val reminderTimeInMillis = convertDateTimeToMillis(
+                        dateForReminder,
                         selectedTime.value
-                    ),
-                    isTaken = false,
-                    isRepeat = isRepeat,
-                    frequency = frequency.value,
-                    date = selectedDate.value.toString(),
-                )
-                viewModel.insert(reminder)
+                    )
 
-                try {
-                    if (isRepeat )
-//                        setUpPeriodicAlarm(context, reminder)
-                    else
+                    val reminder = Reminder(
+                        name = name,
+                        dosage = dosage,
+                        timeinMillis = reminderTimeInMillis,
+                        isTaken = false,
+                        isRepeat = isRepeat,
+                        frequency = frequency.value,
+                        date = dateForReminder.toString(),
+                    )
+                    viewModel.insert(reminder)
+
+                    try {
                         alarmSetup(context, reminder)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
 
                 scope.launch {
