@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material3.Icon
@@ -37,28 +38,33 @@ import com.pratistha.reminderapp.utils.cancelAlarm
 import com.pratistha.reminderapp.utils.convertMillisToTime
 
 @Composable
-fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context) {
+fun ReminderItem(
+    item: Reminder,
+    viewModel: ReminderViewModel,
+    context: Context,
+    onEdit: (Reminder) -> Unit
+) {
 
     Row(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(25))
+            .shadow(4.dp, RoundedCornerShape(20.dp))
             .background(
                 color = if (item.isTaken)
                     MaterialTheme.colorScheme.onSurface
                 else
                     MaterialTheme.colorScheme.tertiary,
             )
-            .padding(vertical = 16.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.meds_icon),
-                contentDescription = "Medicine",
-                modifier = Modifier.size(50.dp)
-            )
+        Image(
+            painter = painterResource(id = R.drawable.meds_icon),
+            contentDescription = "Medicine",
+            modifier = Modifier.size(48.dp)
+        )
 
         Column(
             modifier = Modifier
@@ -73,11 +79,11 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
                 color = Color.Black
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(18.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
                 Row(
@@ -92,57 +98,66 @@ fun ReminderItem(item: Reminder, viewModel: ReminderViewModel, context: Context)
                     Icon(
                         imageVector = Icons.Default.Opacity,
                         contentDescription = "Dosage",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(14.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${item.dosage} mg",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = if (item.isTaken) Icons.Filled.Alarm else Icons.Outlined.Alarm,
+                        imageVector = Icons.Outlined.Alarm,
                         contentDescription = "Time",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(14.dp)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = convertMillisToTime(item.timeinMillis),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-                if(item.isRepeat) {
+            if (item.isRepeat) {
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "Repeats ${item.frequency}",
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
 
-
-        IconButton(
-            onClick = {
-                cancelAlarm(context, item)
-                viewModel.delete(item)
-            },
-            modifier = Modifier.align(Alignment.Top) // cleaner UI
+        // ACTION COLUMN
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete",
-                tint = MaterialTheme.colorScheme.error
-            )
+
+            IconButton(
+                onClick = { onEdit(item) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            IconButton(
+                onClick = {
+                    cancelAlarm(context, item)
+                    viewModel.delete(item)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 }

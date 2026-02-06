@@ -46,6 +46,7 @@ import com.pratistha.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.pratistha.reminderapp.data.local.Frequency
+import com.pratistha.reminderapp.utils.convertMillisToTime
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -54,8 +55,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val editingReminder = remember { mutableStateOf<Reminder?>(null) }
 
     val selectedTime = remember { mutableStateOf("") }
+    val isEditable = remember { mutableStateOf(false) }
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     val today = LocalDate.now()
     val days = remember {
@@ -69,6 +72,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
             InputForm(
                 selectedDate.value,
                 time = selectedTime.value,
+                isEditable.value,
                 onTimeClick = { pickedTime ->
                     selectedTime.value = pickedTime
                 }
@@ -108,7 +112,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         frequency = frequency.value,
                         date = dateForReminder.toString(),
                     )
-                    viewModel.insert(reminder)
+                    if (isEditable.value)
+                        viewModel.update(reminder)
+                    else
+                        viewModel.insert(reminder)
 
                     try {
                         alarmSetup(context, reminder)
@@ -190,7 +197,12 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                                 modifier = Modifier.fillMaxSize()
                             ) {
                                 items(list.value.list) { item ->
-                                    ReminderItem(item = item, viewModel = viewModel, context)
+                                    ReminderItem(item = item, viewModel = viewModel, context) { reminderToEdit ->
+                                        editingReminder.value = reminderToEdit
+                                        selectedTime.value = convertMillisToTime(reminderToEdit.timeinMillis)
+
+                                        scope.launch { sheetState.show() }
+                                    }
                                 }
                             }
                         }

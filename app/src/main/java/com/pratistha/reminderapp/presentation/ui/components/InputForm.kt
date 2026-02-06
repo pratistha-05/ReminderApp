@@ -53,6 +53,7 @@ import java.util.Calendar
 fun InputForm(
     selectedDate: LocalDate,
     time: String,
+    isEditable:Boolean=false,
     onTimeClick: (String) -> Unit,
     onClick: (String, String, Boolean, Frequency) -> Unit
 ) {
@@ -187,7 +188,10 @@ fun InputForm(
             )
 
         ) {
-            Text(text = "Add Reminder", color = Color.White)
+            if (!isEditable)
+                Text(text = "Add Reminder", color = Color.White)
+            else
+                Text(text = "Save", color = Color.White)
         }
 
 //        if (showIntervalDialog.value) {
