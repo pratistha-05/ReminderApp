@@ -30,6 +30,18 @@ class ReminderViewModel @Inject constructor(
     private val _selectedDate = MutableStateFlow(LocalDate.now().toString())
     val selectedDate = _selectedDate.asStateFlow()
 
+    private val _editingReminder = MutableStateFlow<Reminder?>(null)
+    val editingReminder = _editingReminder.asStateFlow()
+
+    fun editReminder(reminder: Reminder) {
+        _editingReminder.value = reminder
+    }
+
+    fun clearEditing() {
+        _editingReminder.value = null
+    }
+
+
     val list: StateFlow<ReminderUiState> =
         selectedDate
             .flatMapLatest { date ->

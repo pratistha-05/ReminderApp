@@ -26,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,6 +47,7 @@ import com.pratistha.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.pratistha.reminderapp.data.local.Frequency
+import com.pratistha.reminderapp.utils.cancelAlarm
 import com.pratistha.reminderapp.utils.convertMillisToTime
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -55,12 +57,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val editingReminder = remember { mutableStateOf<Reminder?>(null) }
-
     val selectedTime = remember { mutableStateOf("") }
-    val isEditable = remember { mutableStateOf(false) }
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     val today = LocalDate.now()
+    val editingReminder by viewModel.editingReminder.collectAsState()
     val days = remember {
         (0..6).map { today.plusDays(it.toLong()) }
     }
@@ -72,7 +72,6 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
             InputForm(
                 selectedDate.value,
                 time = selectedTime.value,
-                isEditable.value,
                 onTimeClick = { pickedTime ->
                     selectedTime.value = pickedTime
                 }
@@ -96,35 +95,68 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                     0..0
                 }
 
-                for (i in daysToSchedule) {
-                    val dateForReminder = selectedDate.value.plusDays(i.toLong())
-                    val reminderTimeInMillis = convertDateTimeToMillis(
-                        dateForReminder,
-                        selectedTime.value
-                    )
+                val existing = editingReminder
 
-                    val reminder = Reminder(
+                if (existing != null) {
+
+                    // -------- EDIT MODE --------
+
+                    val updatedReminder = existing.copy(
                         name = name,
                         dosage = dosage,
-                        timeinMillis = reminderTimeInMillis,
-                        isTaken = false,
+                        timeinMillis = convertDateTimeToMillis(
+                            selectedDate.value,
+                            selectedTime.value
+                        ),
                         isRepeat = isRepeat,
                         frequency = frequency.value,
-                        date = dateForReminder.toString(),
+                        date = selectedDate.value.toString()
                     )
-                    if (isEditable.value)
-                        viewModel.update(reminder)
-                    else
-                        viewModel.insert(reminder)
+
+                    viewModel.update(updatedReminder)
 
                     try {
-                        alarmSetup(context, reminder)
+                        cancelAlarm(context, existing)
+                        alarmSetup(context, updatedReminder)
                     } catch (e: Exception) {
                         e.printStackTrace()
+                    }
+
+                } else {
+
+                    // -------- ADD MODE --------
+
+                    for (i in daysToSchedule) {
+
+                        val dateForReminder = selectedDate.value.plusDays(i.toLong())
+
+                        val reminderTimeInMillis = convertDateTimeToMillis(
+                            dateForReminder,
+                            selectedTime.value
+                        )
+
+                        val reminder = Reminder(
+                            name = name,
+                            dosage = dosage,
+                            timeinMillis = reminderTimeInMillis,
+                            isTaken = false,
+                            isRepeat = isRepeat,
+                            frequency = frequency.value,
+                            date = dateForReminder.toString(),
+                        )
+
+                        viewModel.insert(reminder)
+
+                        try {
+                            alarmSetup(context, reminder)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
 
                 scope.launch {
+                    viewModel.clearEditing()
                     selectedTime.value = ""
                     sheetState.hide()
                 }
@@ -198,7 +230,8 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                             ) {
                                 items(list.value.list) { item ->
                                     ReminderItem(item = item, viewModel = viewModel, context) { reminderToEdit ->
-                                        editingReminder.value = reminderToEdit
+                                        viewModel.editReminder(reminderToEdit)
+
                                         selectedTime.value = convertMillisToTime(reminderToEdit.timeinMillis)
 
                                         scope.launch { sheetState.show() }
