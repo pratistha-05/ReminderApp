@@ -113,7 +113,12 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         date = selectedDate.value.toString()
                     )
 
-                    viewModel.update(updatedReminder)
+                    if (existing.timeinMillis != updatedReminder.timeinMillis) {
+                        viewModel.delete(existing)
+                        viewModel.insert(updatedReminder)
+                    } else {
+                        viewModel.update(updatedReminder)
+                    }
 
                     try {
                         cancelAlarm(context, existing)
@@ -233,6 +238,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                                         viewModel.editReminder(reminderToEdit)
 
                                         selectedTime.value = convertMillisToTime(reminderToEdit.timeinMillis)
+                                        selectedDate.value = LocalDate.parse(reminderToEdit.date)
 
                                         scope.launch { sheetState.show() }
                                     }
