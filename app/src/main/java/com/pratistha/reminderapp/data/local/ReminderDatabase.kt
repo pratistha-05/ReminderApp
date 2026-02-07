@@ -8,20 +8,20 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.pratistha.reminderapp.data.local.dao.ReminderDao
 
-@Database(entities = [Reminder::class], version = 2, exportSchema = false)
+
+@Database(entities = [Reminder::class], version = 4)
 abstract class ReminderDatabase : RoomDatabase() {
-    abstract fun dao(): ReminderDao
-    companion object{
-        @Volatile
-        private var Instance:ReminderDatabase? = null
-        fun getDatabase(context: Context): ReminderDatabase {
-            return Instance?: synchronized(this){
-                Room.databaseBuilder(context,ReminderDatabase::class.java,"reminder_db")
-                    .fallbackToDestructiveMigration()
-                    .build()
-                    .also { Instance = it }
-            }
-        }
+
+    abstract fun getReminderDao(): ReminderDao
+
+    companion object {
+        fun getInstance(context: Context) =
+            Room.databaseBuilder(
+                context,
+                ReminderDatabase::class.java,
+                "reminder"
+            )
+                .fallbackToDestructiveMigration()
                 .build()
     }
 }

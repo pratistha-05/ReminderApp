@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -152,9 +153,10 @@ fun ReminderItem(
                         onClick = { onEdit(item) }
                     ) {
                         Icon(
+                            modifier = Modifier.size(18.dp),
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.tertiaryContainer
                         )
                     }
                 }
@@ -166,6 +168,7 @@ fun ReminderItem(
                     }
                 ) {
                     Icon(
+                        modifier = Modifier.size(18.dp),
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
                         tint = MaterialTheme.colorScheme.error

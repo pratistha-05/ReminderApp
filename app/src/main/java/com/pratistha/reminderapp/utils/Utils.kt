@@ -27,6 +27,6 @@ fun convertDateTimeToMillis(
 
 
 fun convertMillisToTime(timeInMillis: Long): String {
-  val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+  val formatter = SimpleDateFormat("hh:mm", Locale.getDefault())
   return formatter.format(Date(timeInMillis))
 }

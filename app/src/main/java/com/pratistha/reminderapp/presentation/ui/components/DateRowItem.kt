@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,16 +18,15 @@ import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
 @Composable
-fun DateRowItem(selectedDate: MutableState<LocalDate>, date: LocalDate, onDateSelect:()->Unit) {
-    val isSelected = selectedDate.value == date
+fun DateRowItem(selectedDate: LocalDate?, date: LocalDate, onDateSelect: (LocalDate) -> Unit) {
+    val isSelected = selectedDate == date
     Box(
         modifier = Modifier
             .height(80.dp)
             .clip(RoundedCornerShape(50))
             .background(if (isSelected) MaterialTheme.colorScheme.tertiaryContainer else Color.LightGray)
             .clickable {
-                selectedDate.value = date
-                onDateSelect()
+                onDateSelect(date)
             }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center

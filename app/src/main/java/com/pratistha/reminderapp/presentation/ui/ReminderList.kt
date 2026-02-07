@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -43,12 +44,10 @@ import com.pratistha.reminderapp.presentation.ui.components.ReminderItem
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.utils.alarmSetup
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
-import com.pratistha.reminderapp.utils.setUpPeriodicAlarm
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.utils.cancelAlarm
-import com.pratistha.reminderapp.utils.convertMillisToTime
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -67,8 +66,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
-        modifier = Modifier.fillMaxWidth(),
-        sheetContent = {
+        modifier = Modifier.fillMaxWidth()
+        .navigationBarsPadding()
+        .imePadding(),
+    sheetContent = {
             InputForm(
                 viewModel = viewModel,
                 onTimeClick = { pickedTime ->
@@ -206,7 +207,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                                     selectedDate,
                                     date,
                                     onDateSelect = {
-                                        viewModel.selectDate(date.toString())
+                                        viewModel.selectDate(it.toString())
                                     }
                                 )
                             }
@@ -245,5 +246,13 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 }
             }
         )
+
+        /*potential ui issues:
+        1. the edit works on previous time, it should not
+        2. move the bottomsheet above system ui
+        3. add max line to name
+        4. if im adding reminder at 00:02 for next day, reminder is not
+         */
+
     }
 }
