@@ -113,12 +113,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         date = selectedDate.value.toString()
                     )
 
-                    if (existing.timeinMillis != updatedReminder.timeinMillis) {
-                        viewModel.delete(existing)
-                        viewModel.insert(updatedReminder)
-                    } else {
-                        viewModel.update(updatedReminder)
-                    }
+                    viewModel.update(updatedReminder)
 
                     try {
                         cancelAlarm(context, existing)

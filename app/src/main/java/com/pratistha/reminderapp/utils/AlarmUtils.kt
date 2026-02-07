@@ -28,7 +28,7 @@ fun alarmSetup(context: Context, reminder: Reminder) {
     }
     Log.e("ReminderApp", "time: ${reminder.timeinMillis}")
 
-    val pendingIntent = PendingIntent.getBroadcast(context, reminder.timeinMillis.toInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+    val pendingIntent = PendingIntent.getBroadcast(context, reminder.id, intent, PendingIntent.FLAG_IMMUTABLE)
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -45,7 +45,7 @@ fun cancelAlarm(context: Context, reminder: Reminder){
         putExtra(REMINDER, Gson().toJson(reminder))
     }
 
-    val pendingIntent=PendingIntent.getBroadcast(context,reminder.timeinMillis.toInt(),intent,PendingIntent.FLAG_IMMUTABLE)
+    val pendingIntent=PendingIntent.getBroadcast(context,reminder.id,intent,PendingIntent.FLAG_IMMUTABLE)
 
     val alarmManager=context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     try{
@@ -69,7 +69,7 @@ fun setUpPeriodicAlarm(context: Context, reminder: Reminder, intervalTime: Long)
         putExtra(REMINDER, Gson().toJson(reminder))
     }
 
-    val pendingIntent=PendingIntent.getBroadcast(context,reminder.timeinMillis.toInt(),intent,PendingIntent.FLAG_IMMUTABLE)
+    val pendingIntent=PendingIntent.getBroadcast(context,reminder.id,intent,PendingIntent.FLAG_IMMUTABLE)
 
     val alarmManager=context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     try{

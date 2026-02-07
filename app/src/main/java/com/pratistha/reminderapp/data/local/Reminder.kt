@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Reminder(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val name:String,
     val dosage:String,
-    @PrimaryKey(autoGenerate = false)
     val timeinMillis:Long,
     var isTaken:Boolean,
     val isRepeat:Boolean,
