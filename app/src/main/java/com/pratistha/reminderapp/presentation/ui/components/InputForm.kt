@@ -45,27 +45,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
+import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.data.local.Frequency
 import java.time.LocalDate
 import java.util.Calendar
 
 @Composable
 fun InputForm(
-    selectedDate: LocalDate,
-    time: String,
-    isEditable:Boolean=false,
+    viewModel: ReminderViewModel,
     onTimeClick: (String) -> Unit,
-    onClick: (String, String, Boolean, Frequency) -> Unit
+    onSaveClick: () -> Unit
 ) {
+    val name by viewModel.reminderName.collectAsState()
+    val dosage by viewModel.reminderDosage.collectAsState()
+    val time by viewModel.reminderTime.collectAsState()
+    val isRepeat by viewModel.isRepeat.collectAsState()
+    val frequency by viewModel.frequency.collectAsState()
+    val isEditable by viewModel.editingReminder.collectAsState()
 
-    val name = remember { mutableStateOf("") }
-    val dosage = remember { mutableStateOf(0) }
     val context = LocalContext.current
-    val isRepeat = remember { mutableStateOf(false) }
-    val showIntervalDialog = remember { mutableStateOf(false) }
-//    val intervalTime = remember { mutableStateOf(0L) }
-
-    var selectedFrequency by remember { mutableStateOf(Frequency.Daily) }
+    val selectedDateStr by viewModel.selectedDate.collectAsState()
+    val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
 
     Column(
         modifier = Modifier
@@ -80,8 +80,8 @@ fun InputForm(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = name.value,
-            onValueChange = { name.value = it },
+            value = name,
+            onValueChange = { viewModel.onNameChange(it) },
             label = { Text("Name") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -97,9 +97,9 @@ fun InputForm(
         Spacer(modifier = Modifier.height(4.dp))
 
         DosageCounterRow(
-            dosage = dosage.value,
+            dosage = dosage,
             onDosageChange = { newValue ->
-                dosage.value = newValue
+                viewModel.onDosageChange(newValue)
             }
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -161,15 +161,15 @@ fun InputForm(
             Text(text = "Repeat Alarm?")
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
-                checked = isRepeat.value,
-                onCheckedChange = { isRepeat.value = it }
+                checked = isRepeat,
+                onCheckedChange = { viewModel.onRepeatChange(it) }
             )
         }
 
-        if (isRepeat.value) {
+        if (isRepeat) {
             FrequencyDropdown(
-                selected = selectedFrequency,
-                onSelected = { selectedFrequency = it }
+                selected = frequency,
+                onSelected = { viewModel.onFrequencyChange(it) }
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -177,28 +177,18 @@ fun InputForm(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                onClick(name.value, dosage.value.toString(), isRepeat.value, selectedFrequency)
-                name.value = ""
-                dosage.value = 0
-                isRepeat.value = false
-                selectedFrequency = Frequency.Daily
+                onSaveClick()
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer
             )
 
         ) {
-            if (!isEditable)
+            if (isEditable == null)
                 Text(text = "Add Reminder", color = Color.White)
             else
                 Text(text = "Save", color = Color.White)
         }
-
-//        if (showIntervalDialog.value) {
-//            TimeIntervalPickerDialog(showIntervalDialog) { selectedInterval ->
-//                intervalTime.value = selectedInterval
-//            }
-//        }
     }
 }
 

@@ -2,6 +2,7 @@ package com.pratistha.reminderapp.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.domain.useCases.DeleteUseCase
 import com.pratistha.reminderapp.domain.useCases.GetRemindersUseCase
@@ -33,12 +34,44 @@ class ReminderViewModel @Inject constructor(
     private val _editingReminder = MutableStateFlow<Reminder?>(null)
     val editingReminder = _editingReminder.asStateFlow()
 
+    // Form State
+    private val _reminderName = MutableStateFlow("")
+    val reminderName = _reminderName.asStateFlow()
+
+    private val _reminderDosage = MutableStateFlow(0)
+    val reminderDosage = _reminderDosage.asStateFlow()
+
+    private val _reminderTime = MutableStateFlow("")
+    val reminderTime = _reminderTime.asStateFlow()
+
+    private val _isRepeat = MutableStateFlow(false)
+    val isRepeat = _isRepeat.asStateFlow()
+
+    private val _frequency = MutableStateFlow(Frequency.Daily)
+    val frequency = _frequency.asStateFlow()
+
+    fun onNameChange(newName: String) { _reminderName.value = newName }
+    fun onDosageChange(newDosage: Int) { _reminderDosage.value = newDosage }
+    fun onTimeChange(newTime: String) { _reminderTime.value = newTime }
+    fun onRepeatChange(repeat: Boolean) { _isRepeat.value = repeat }
+    fun onFrequencyChange(newFrequency: Frequency) { _frequency.value = newFrequency }
+
     fun editReminder(reminder: Reminder) {
         _editingReminder.value = reminder
+        _reminderName.value = reminder.name
+        _reminderDosage.value = reminder.dosage.toIntOrNull() ?: 0
+        _reminderTime.value = com.pratistha.reminderapp.utils.convertMillisToTime(reminder.timeinMillis)
+        _isRepeat.value = reminder.isRepeat
+        _frequency.value = Frequency.values().find { it.value == reminder.frequency } ?: Frequency.Daily
     }
 
     fun clearEditing() {
         _editingReminder.value = null
+        _reminderName.value = ""
+        _reminderDosage.value = 0
+        _reminderTime.value = ""
+        _isRepeat.value = false
+        _frequency.value = Frequency.Daily
     }
 
 

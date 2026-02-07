@@ -57,8 +57,8 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val selectedTime = remember { mutableStateOf("") }
-    val selectedDate = remember { mutableStateOf(LocalDate.now()) }
+    val selectedDateStr by viewModel.selectedDate.collectAsState()
+    val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
     val today = LocalDate.now()
     val editingReminder by viewModel.editingReminder.collectAsState()
     val days = remember {
@@ -70,19 +70,24 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
         modifier = Modifier.fillMaxWidth(),
         sheetContent = {
             InputForm(
-                selectedDate.value,
-                time = selectedTime.value,
+                viewModel = viewModel,
                 onTimeClick = { pickedTime ->
-                    selectedTime.value = pickedTime
+                    viewModel.onTimeChange(pickedTime)
                 }
-            ) { name, dosage, isRepeat, frequency ->
+            ) {
+                val name = viewModel.reminderName.value
+                val dosage = viewModel.reminderDosage.value.toString()
+                val time = viewModel.reminderTime.value
+                val isRepeat = viewModel.isRepeat.value
+                val frequency = viewModel.frequency.value
+
                 if (name.isBlank()) {
                     return@InputForm
                 }
                 if (dosage.isBlank()) {
                     return@InputForm
                 }
-                if (selectedTime.value.isEmpty()) {
+                if (time.isEmpty()) {
                     return@InputForm
                 }
                 val daysToSchedule = if (isRepeat) {
@@ -105,12 +110,12 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         name = name,
                         dosage = dosage,
                         timeinMillis = convertDateTimeToMillis(
-                            selectedDate.value,
-                            selectedTime.value
+                            selectedDate,
+                            time
                         ),
                         isRepeat = isRepeat,
                         frequency = frequency.value,
-                        date = selectedDate.value.toString()
+                        date = selectedDate.toString()
                     )
 
                     viewModel.update(updatedReminder)
@@ -128,11 +133,11 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 
                     for (i in daysToSchedule) {
 
-                        val dateForReminder = selectedDate.value.plusDays(i.toLong())
+                        val dateForReminder = selectedDate.plusDays(i.toLong())
 
                         val reminderTimeInMillis = convertDateTimeToMillis(
                             dateForReminder,
-                            selectedTime.value
+                            time
                         )
 
                         val reminder = Reminder(
@@ -157,7 +162,6 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 
                 scope.launch {
                     viewModel.clearEditing()
-                    selectedTime.value = ""
                     sheetState.hide()
                 }
             }
@@ -231,10 +235,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                                 items(list.value.list) { item ->
                                     ReminderItem(item = item, viewModel = viewModel, context) { reminderToEdit ->
                                         viewModel.editReminder(reminderToEdit)
-
-                                        selectedTime.value = convertMillisToTime(reminderToEdit.timeinMillis)
-                                        selectedDate.value = LocalDate.parse(reminderToEdit.date)
-
+                                        viewModel.selectDate(reminderToEdit.date)
                                         scope.launch { sheetState.show() }
                                     }
                                 }

@@ -44,119 +44,133 @@ fun ReminderItem(
     context: Context,
     onEdit: (Reminder) -> Unit
 ) {
-
-    Row(
+    androidx.compose.material3.Card(
         modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(20.dp))
-            .background(
-                color = if (item.isTaken)
-                    MaterialTheme.colorScheme.onSurface
-                else
-                    MaterialTheme.colorScheme.tertiary,
-            )
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Image(
-            painter = painterResource(id = R.drawable.meds_icon),
-            contentDescription = "Medicine",
-            modifier = Modifier.size(48.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = if (item.isTaken) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surface,
+            contentColor = if (item.isTaken) Color(0xFF1B5E20) else MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(
+            defaultElevation = 2.dp
         )
-
-        Column(
+    ) {
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp)
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-
-            Text(
-                text = item.name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            // Icon / Image
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        if (item.isTaken) Color(0xFFC8E6C9) else MaterialTheme.colorScheme.primaryContainer,
+                        androidx.compose.foundation.shape.CircleShape
+                    ),
+                contentAlignment = Alignment.Center
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.meds_icon),
+                    contentDescription = "Medicine",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Text Information
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = if (item.isTaken) androidx.compose.ui.text.style.TextDecoration.LineThrough else null
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Time Chip
+                    androidx.compose.material3.Surface(
+                        color = if (item.isTaken) Color(0xFFA5D6A7) else MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Alarm,
+                                contentDescription = null,
+                                modifier = Modifier.size(12.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = convertMillisToTime(item.timeinMillis),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
+
+                    // Dosage Chip
+                    androidx.compose.material3.Surface(
+                        color = if (item.isTaken) Color(0xFFA5D6A7) else MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "${item.dosage} mg",
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            style = MaterialTheme.typography.labelSmall
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                    }
+                }
+                
+                if (item.isRepeat) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Repeats ${item.frequency}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            // Actions
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (!item.isTaken) {
+                    IconButton(
+                        onClick = { onEdit(item) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
+                IconButton(
+                    onClick = {
+                        cancelAlarm(context, item)
+                        viewModel.delete(item)
+                    }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Opacity,
-                        contentDescription = "Dosage",
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "${item.dosage} mg",
-                        style = MaterialTheme.typography.bodySmall
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Outlined.Alarm,
-                        contentDescription = "Time",
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = convertMillisToTime(item.timeinMillis),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-
-            if (item.isRepeat) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = "Repeats ${item.frequency}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-
-        // ACTION COLUMN
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            IconButton(
-                onClick = { onEdit(item) }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            IconButton(
-                onClick = {
-                    cancelAlarm(context, item)
-                    viewModel.delete(item)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = MaterialTheme.colorScheme.error
-                )
             }
         }
     }
