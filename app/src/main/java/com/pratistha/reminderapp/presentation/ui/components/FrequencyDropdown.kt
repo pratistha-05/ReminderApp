@@ -24,8 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import com.pratistha.reminderapp.data.local.Frequency
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,38 +34,58 @@ fun FrequencyDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                indication = LocalIndication.current,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { expanded = true }
     ) {
+
         OutlinedTextField(
             value = selected.value,
             onValueChange = {},
             readOnly = true,
+            enabled = false, // 🔥 prevents consuming clicks
             label = { Text("Frequency") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "Dropdown"
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                disabledTextColor = Color.Black,
+                disabledBorderColor = Color.Gray,
+                disabledLabelColor = Color.Gray,
+                disabledTrailingIconColor = Color.Black
+            )
         )
 
-        ExposedDropdownMenu(
+        DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .width(120.dp)
+                .background(Color.White)
         ) {
             Frequency.values().forEach { frequency ->
                 DropdownMenuItem(
-                    text = { Text(text = frequency.value) },
+                    text = {
+                        Text(
+                            text = frequency.value,
+                            color = Color.Black
+                        )
+                    },
                     onClick = {
                         onSelected(frequency)
                         expanded = false
                     }
                 )
+                }
             }
         }
     }
-}
 
