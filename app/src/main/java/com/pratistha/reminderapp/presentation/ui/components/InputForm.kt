@@ -57,6 +57,8 @@ import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.data.local.Frequency
 import java.time.LocalDate
 import java.util.Calendar
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun InputForm(
@@ -75,11 +77,13 @@ fun InputForm(
     val context = LocalContext.current
     val selectedDateStr by viewModel.selectedDate.collectAsState()
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(scrollState),
     ) {
 //        Text(
 //            text = "Add a new reminder",

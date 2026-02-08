@@ -34,7 +34,18 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             ReminderAppTheme(darkTheme = false) {
-                ReminderListUi()
+                val navController = androidx.navigation.compose.rememberNavController()
+                androidx.navigation.compose.NavHost(
+                    navController = navController,
+                    startDestination = com.pratistha.reminderapp.presentation.navigation.Screen.Home.route
+                ) {
+                    androidx.navigation.compose.composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
+                        ReminderListUi(navController = navController)
+                    }
+                    androidx.navigation.compose.composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
+                        com.pratistha.reminderapp.presentation.ui.AddReminderScreen(navController = navController)
+                    }
+                }
             }
         }
     }
