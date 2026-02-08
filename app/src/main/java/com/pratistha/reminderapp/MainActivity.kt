@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
             if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
             ) {
-                ActivityCompat.requestPermissions(ma
+                ActivityCompat.requestPermissions(
                     this,
                     arrayOf(POST_NOTIFICATIONS),
                     1001
