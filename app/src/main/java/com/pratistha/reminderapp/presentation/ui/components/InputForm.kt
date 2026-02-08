@@ -257,10 +257,7 @@ fun InputForm(
                     checked = isRepeat,
                     onCheckedChange = { viewModel.onRepeatChange(it) },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary,
-                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        checkedTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
                     )
                 )
             }

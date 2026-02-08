@@ -189,11 +189,11 @@ fun ToolTipIcon(onAddClick:()->Unit){
         state = tooltipState
     ) {
 
-        LaunchedEffect(Unit) {
-            tooltipState.show()
-            delay(8000)
-            tooltipState.dismiss()
-        }
+//        LaunchedEffect(Unit) {
+//            tooltipState.show()
+//            delay(8000)
+//            tooltipState.dismiss()
+//        }
 
         IconButton(
             onClick = { onAddClick()}
