@@ -91,6 +91,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                 val time = viewModel.reminderTime.value
                 val isRepeat = viewModel.isRepeat.value
                 val frequency = viewModel.frequency.value
+                val slot = viewModel.slot.value
 
                 if (name.isBlank()) {
                     return@InputForm
@@ -120,6 +121,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                     val updatedReminder = existing.copy(
                         name = name,
                         dosage = dosage,
+                        slot = slot,
                         timeinMillis = convertDateTimeToMillis(
                             selectedDate,
                             time
@@ -154,6 +156,7 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         val reminder = Reminder(
                             name = name,
                             dosage = dosage,
+                            slot = slot,
                             timeinMillis = reminderTimeInMillis,
                             isTaken = false,
                             isRepeat = isRepeat,

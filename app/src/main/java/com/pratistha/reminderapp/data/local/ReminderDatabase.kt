@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.pratistha.reminderapp.data.local.dao.ReminderDao
 
 
-@Database(entities = [Reminder::class], version = 4)
+@Database(entities = [Reminder::class], version = 5, exportSchema = false)
 abstract class ReminderDatabase : RoomDatabase() {
 
     abstract fun getReminderDao(): ReminderDao

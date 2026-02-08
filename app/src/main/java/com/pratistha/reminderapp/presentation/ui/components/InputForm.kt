@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
@@ -173,6 +175,48 @@ fun InputForm(
                 )
             }
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "Select Slots")
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        val slots = listOf("Before Meal", "After Meal", "Morning", "Evening", "Before Sleep")
+        val selectedSlot by viewModel.slot.collectAsState()
+
+        androidx.compose.foundation.lazy.LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(slots) { slotOption ->
+                val isSelected = slotOption == selectedSlot
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .clickable { viewModel.onSlotChange(if (isSelected) "" else slotOption) }
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = slotOption,
+                        color = if (isSelected) Color.White else Color.Black,
+                        style = TextStyle(fontSize = 14.sp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth(),

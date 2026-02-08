@@ -134,6 +134,21 @@ fun ReminderItem(
                     }
                 }
                 
+                if (item.slot.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = item.slot,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .background(
+                                color = if (item.isTaken) Color(0xFFA5D6A7) else MaterialTheme.colorScheme.surfaceVariant,
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .padding(4.dp)
+                    )
+                }
+
                 if (item.isRepeat) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
