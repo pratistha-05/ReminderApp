@@ -1,16 +1,18 @@
 package com.pratistha.reminderapp.presentation.ui.components
 
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pratistha.reminderapp.data.local.Frequency
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FrequencyDropdown(
     selected: Frequency,
@@ -34,7 +37,10 @@ fun FrequencyDropdown(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { expanded = true }
+            .clickable(
+                indication = LocalIndication.current,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { expanded = true }
     ) {
 
         OutlinedTextField(
@@ -62,23 +68,24 @@ fun FrequencyDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .width(120.dp) // 👈 smaller width
-                .background(Color.White) // 👈 white background
+                .width(120.dp)
+                .background(Color.White)
         ) {
             Frequency.values().forEach { frequency ->
                 DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = frequency.value,
+                            color = Color.Black
+                        )
+                    },
                     onClick = {
                         onSelected(frequency)
                         expanded = false
                     }
-                ) {
-                    Text(
-                        text = frequency.value,
-                        color = Color.Black
-                    )
+                )
                 }
             }
         }
     }
-}
 

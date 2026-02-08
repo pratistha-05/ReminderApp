@@ -5,12 +5,15 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,16 +21,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -59,7 +59,9 @@ import java.time.LocalDate
 import java.util.Calendar
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputForm(
     viewModel: ReminderViewModel,
@@ -110,12 +112,16 @@ fun InputForm(
             onValueChange = { viewModel.onNameChange(it) },
             label = { Text("Name") },
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF004D40),
-                unfocusedBorderColor = Color.Gray,
+            colors = TextFieldDefaults.colors(
+                unfocusedTextColor = Color.Black,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color(0xFF004D40),
+                unfocusedIndicatorColor = Color.Gray,
                 focusedLabelColor = Color(0xFF004D40),
                 cursorColor = Color(0xFF004D40)
             )
+
         )
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -145,7 +151,10 @@ fun InputForm(
                         color = Color.Gray,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .clickable { showTimePicker(context, onTimeClick, selectedDate) },
+                    .clickable(
+                        indication = LocalIndication.current,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { showTimePicker(context, onTimeClick, selectedDate) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -168,7 +177,10 @@ fun InputForm(
                         color = Color.Gray,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .clickable {
+                    .clickable(
+                        indication = LocalIndication.current,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
                         showTimePicker(context, onTimeClick, selectedDate)
                     },
                 contentAlignment = Alignment.Center
@@ -179,42 +191,50 @@ fun InputForm(
                 )
             }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Select Slots")
-        }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(text = "Select Slots")
         Spacer(modifier = Modifier.height(8.dp))
 
         val slots = listOf("Before Meal", "After Meal", "Morning", "Evening", "Before Sleep")
         val selectedSlot by viewModel.slot.collectAsState()
 
-        androidx.compose.foundation.lazy.LazyRow(
+              FlowRow(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(slots) { slotOption ->
+            slots.forEach { slotOption ->
+
                 val isSelected = slotOption == selectedSlot
+
                 Box(
                     modifier = Modifier
                         .background(
-                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                            color = if (isSelected)
+                                MaterialTheme.colorScheme.tertiaryContainer
+                            else Color.Transparent,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .border(
                             width = 1.dp,
-                            color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
+                            color = if (isSelected)
+                                MaterialTheme.colorScheme.tertiaryContainer
+                            else Color.Gray,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .clickable { viewModel.onSlotChange(if (isSelected) "" else slotOption) }
+                        .clickable(
+                            indication = LocalIndication.current,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            viewModel.onSlotChange(if (isSelected) "" else slotOption)
+                        }
                         .padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     Text(
                         text = slotOption,
                         color = if (isSelected) Color.White else Color.Black,
-                        style = TextStyle(fontSize = 14.sp)
+                        fontSize = 14.sp
                     )
                 }
             }

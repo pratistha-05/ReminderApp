@@ -11,6 +11,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.pratistha.reminderapp.presentation.ui.AddReminderScreen
 import com.pratistha.reminderapp.presentation.ui.ReminderListUi
 import com.pratistha.reminderapp.ui.theme.ReminderAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,16 +37,16 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             ReminderAppTheme(darkTheme = false) {
-                val navController = androidx.navigation.compose.rememberNavController()
+                val navController = rememberNavController()
                 androidx.navigation.compose.NavHost(
                     navController = navController,
                     startDestination = com.pratistha.reminderapp.presentation.navigation.Screen.Home.route
                 ) {
-                    androidx.navigation.compose.composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
+                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
                         ReminderListUi(navController = navController)
                     }
-                    androidx.navigation.compose.composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
-                        com.pratistha.reminderapp.presentation.ui.AddReminderScreen(navController = navController)
+                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
+                        AddReminderScreen(navController = navController)
                     }
                 }
             }

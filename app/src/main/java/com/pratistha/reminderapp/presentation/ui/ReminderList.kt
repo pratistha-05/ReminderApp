@@ -12,8 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.IconButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -31,7 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,14 +49,20 @@ import kotlinx.coroutines.delay
 import androidx.navigation.NavController
 import com.pratistha.reminderapp.presentation.navigation.Screen
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReminderListUi(
     navController: NavController,
     viewModel: ReminderViewModel = hiltViewModel()
 ) {
     val list = viewModel.list.collectAsState()
-
+    val today = LocalDate.now()
+    val selectedDateStr by viewModel.selectedDate.collectAsState()
+    val context = LocalContext.current
+    val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
+    val days = remember {
+        (0..6).map { today.plusDays(it.toLong()) }
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -149,7 +154,7 @@ fun ReminderListUi(
          */
 
     }
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
