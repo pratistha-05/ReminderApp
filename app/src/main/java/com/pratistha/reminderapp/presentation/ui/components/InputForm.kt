@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
@@ -42,6 +43,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeOptions
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
@@ -62,6 +68,7 @@ fun InputForm(
     val isRepeat by viewModel.isRepeat.collectAsState()
     val frequency by viewModel.frequency.collectAsState()
     val isEditable by viewModel.editingReminder.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     val context = LocalContext.current
     val selectedDateStr by viewModel.selectedDate.collectAsState()
@@ -72,15 +79,28 @@ fun InputForm(
             .fillMaxSize()
             .padding(16.dp),
     ) {
+//        Text(
+//            text = "Add a new reminder",
+//            style = TextStyle(fontSize = 20.sp, color = Color(0xFF004D40)),
+//            modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
+//            textAlign = TextAlign.Center
+//        )
+//        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "Enter details",
             style = TextStyle(fontSize = 20.sp),
-            modifier = Modifier.padding(top = 20.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
+            maxLines = 1,
             value = name,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
+            ),
             onValueChange = { viewModel.onNameChange(it) },
             label = { Text("Name") },
             modifier = Modifier.fillMaxWidth(),

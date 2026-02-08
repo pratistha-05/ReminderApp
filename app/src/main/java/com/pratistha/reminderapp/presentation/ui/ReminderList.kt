@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
@@ -24,17 +26,26 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.ui.components.DateRowItem
@@ -48,13 +59,13 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.utils.cancelAlarm
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val list = viewModel.list.collectAsState()
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val selectedDateStr by viewModel.selectedDate.collectAsState()
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
@@ -63,12 +74,11 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
     val days = remember {
         (0..6).map { today.plusDays(it.toLong()) }
     }
+    val scope = rememberCoroutineScope()
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
-        modifier = Modifier.fillMaxWidth()
-        .navigationBarsPadding()
-        .imePadding(),
+        modifier = Modifier.fillMaxWidth(),
     sheetContent = {
             InputForm(
                 viewModel = viewModel,
@@ -177,11 +187,11 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                         )
                     },
                     actions = {
-                        IconButton(
-                            onClick = { scope.launch { sheetState.show() } }
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "Add Reminder")
-                        }
+                        ToolTipIcon(
+                            onAddClick = {
+                                scope.launch { sheetState.show() }
+                            }
+                        )
                     }
                 )
             },
@@ -249,10 +259,63 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 
         /*potential ui issues:
         1. the edit works on previous time, it should not
-        2. move the bottomsheet above system ui
-        3. add max line to name
+
+        2. while adding new reminder the input form  is taking previously saved reminder prefill
+        and button is "Saved"
+
+        3. Timezone problem
+
+        4. bottomsheet is hiding behind system ui
+
         4. if im adding reminder at 00:02 for next day, reminder is not
          */
 
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ToolTipIcon(onAddClick:()->Unit){
+    val tooltipState = rememberTooltipState()
+
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = {
+            RichTooltip(
+                colors = TooltipDefaults.richTooltipColors(
+                    containerColor = Color(0xFFE9F1EA),
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(180.dp)
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        color = Color.Black,
+                        text = "Tap here to add a new reminder",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        },
+        state = tooltipState
+    ) {
+
+        LaunchedEffect(Unit) {
+            tooltipState.show()
+            delay(8000)
+            tooltipState.dismiss()
+        }
+
+        IconButton(
+            onClick = { onAddClick()}
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Add Reminder")
+        }
     }
 }
