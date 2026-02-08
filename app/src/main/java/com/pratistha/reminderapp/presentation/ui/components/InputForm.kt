@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -254,7 +255,13 @@ fun InputForm(
                 Spacer(modifier = Modifier.width(8.dp))
                 Switch(
                     checked = isRepeat,
-                    onCheckedChange = { viewModel.onRepeatChange(it) }
+                    onCheckedChange = { viewModel.onRepeatChange(it) },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
                 )
             }
 
