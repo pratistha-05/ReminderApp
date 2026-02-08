@@ -2,7 +2,10 @@ package com.pratistha.reminderapp.presentation.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -73,7 +77,7 @@ fun ReminderItem(
                     modifier = Modifier
                         .size(48.dp)
                         .background(
-                        if (item.isTaken) Color(0xFFC8E6C9) else MaterialTheme.colorScheme.primaryContainer,
+                            if (item.isTaken) Color(0xFFC8E6C9) else MaterialTheme.colorScheme.primaryContainer,
                             androidx.compose.foundation.shape.CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -122,20 +126,18 @@ fun ReminderItem(
                             InfoChip(text = item.slot)
                         }
                     }
-                     if (item.isRepeat) {
+                    if (item.isRepeat) {
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Repeats ${item.frequency}",
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelMedium,
                             color = Color.Gray
                         )
                     }
                 }
             }
-             Spacer(modifier = Modifier.height(12.dp))
-
-            }
         }
+
 
         // Actions
         Row(
@@ -147,7 +149,10 @@ fun ReminderItem(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
-                        .clickable { onEdit(item) }
+                        .clickable(
+                            indication = LocalIndication.current,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { onEdit(item) }
                         .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -172,14 +177,17 @@ fun ReminderItem(
                 modifier = Modifier
                     .weight(1f)
                     .height(48.dp)
-                    .clickable {
+                    .clickable(
+                        indication = LocalIndication.current,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
                         cancelAlarm(context, item)
                         viewModel.delete(item)
                     }
-                     .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)),
+                    .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
-                 Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
