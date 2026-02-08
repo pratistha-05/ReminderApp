@@ -85,181 +85,188 @@ fun InputForm(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState),
     ) {
-//        Text(
-//            text = "Add a new reminder",
-//            style = TextStyle(fontSize = 20.sp, color = Color(0xFF004D40)),
-//            modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
-//            textAlign = TextAlign.Center
-//        )
-//        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = "Enter details",
-            style = TextStyle(fontSize = 20.sp),
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            maxLines = 1,
-            value = name,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { focusManager.clearFocus() }
-            ),
-            onValueChange = { viewModel.onNameChange(it) },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                unfocusedTextColor = Color.Black,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color(0xFF004D40),
-                unfocusedIndicatorColor = Color.Gray,
-                focusedLabelColor = Color(0xFF004D40),
-                cursorColor = Color(0xFF004D40)
-            )
-
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(text = "Dosage")
-        Spacer(modifier = Modifier.height(4.dp))
-
-        DosageCounterRow(
-            dosage = dosage,
-            onDosageChange = { newValue ->
-                viewModel.onDosageChange(newValue)
-            }
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(text = "Select Time")
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.Start,
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(scrollState),
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(50.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Gray,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .clickable(
-                        indication = LocalIndication.current,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { showTimePicker(context, onTimeClick, selectedDate) },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (time.contains(":")) time.split(":")[0] else "HH",
-                    style = TextStyle(fontSize = 18.sp)
-                )
-            }
+            //        Text(
+            //            text = "Add a new reminder",
+            //            style = TextStyle(fontSize = 20.sp, color = Color(0xFF004D40)),
+            //            modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
+            //            textAlign = TextAlign.Center
+            //        )
+            //        Spacer(modifier = Modifier.height(12.dp))
             Text(
-                modifier = Modifier.padding(top = 10.dp),
-                text = " : ",
-                style = TextStyle(fontSize = 18.sp)
+                text = "Enter details",
+                style = TextStyle(fontSize = 20.sp),
             )
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(50.dp)
-                    .padding(4.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color.Gray,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .clickable(
-                        indication = LocalIndication.current,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        showTimePicker(context, onTimeClick, selectedDate)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (time.contains(":")) time.split(":")[1] else "MM",
-                    style = TextStyle(fontSize = 18.sp)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                maxLines = 1,
+                value = name,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
+                onValueChange = { viewModel.onNameChange(it) },
+                label = { Text("Name") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color(0xFF004D40),
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF004D40),
+                    cursorColor = Color(0xFF004D40)
                 )
-            }
-        }
-        Spacer(modifier = Modifier.height(12.dp))
 
-        Text(text = "Select Slots")
-        Spacer(modifier = Modifier.height(8.dp))
+            )
+            Spacer(modifier = Modifier.height(12.dp))
 
-        val slots = listOf("Before Meal", "After Meal", "Morning", "Evening", "Before Sleep")
-        val selectedSlot by viewModel.slot.collectAsState()
+            Text(text = "Dosage")
+            Spacer(modifier = Modifier.height(4.dp))
 
-              FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            slots.forEach { slotOption ->
+            DosageCounterRow(
+                dosage = dosage,
+                onDosageChange = { newValue ->
+                    viewModel.onDosageChange(newValue)
+                }
+            )
+            Spacer(modifier = Modifier.height(12.dp))
 
-                val isSelected = slotOption == selectedSlot
+            Text(text = "Select Time")
+            Spacer(modifier = Modifier.height(4.dp))
 
+            Row(
+                horizontalArrangement = Arrangement.Start,
+            ) {
                 Box(
                     modifier = Modifier
-                        .background(
-                            color = if (isSelected)
-                                MaterialTheme.colorScheme.tertiaryContainer
-                            else Color.Transparent,
-                            shape = RoundedCornerShape(8.dp)
-                        )
+                        .weight(1f)
+                        .height(50.dp)
                         .border(
                             width = 1.dp,
-                            color = if (isSelected)
-                                MaterialTheme.colorScheme.tertiaryContainer
-                            else Color.Gray,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .clickable(
+                            indication = LocalIndication.current,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { showTimePicker(context, onTimeClick, selectedDate) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (time.contains(":")) time.split(":")[0] else "HH",
+                        style = TextStyle(fontSize = 18.sp)
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(top = 10.dp),
+                    text = " : ",
+                    style = TextStyle(fontSize = 18.sp)
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
+                        .padding(4.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color.Gray,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .clickable(
                             indication = LocalIndication.current,
                             interactionSource = remember { MutableInteractionSource() }
                         ) {
-                            viewModel.onSlotChange(if (isSelected) "" else slotOption)
-                        }
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                            showTimePicker(context, onTimeClick, selectedDate)
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = slotOption,
-                        color = if (isSelected) Color.White else Color.Black,
-                        fontSize = 14.sp
+                        text = if (time.contains(":")) time.split(":")[1] else "MM",
+                        style = TextStyle(fontSize = 18.sp)
                     )
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Repeat Alarm?")
-            Spacer(modifier = Modifier.width(8.dp))
-            Switch(
-                checked = isRepeat,
-                onCheckedChange = { viewModel.onRepeatChange(it) }
-            )
+            Text(text = "Select Slots")
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val slots = listOf("Before Meal", "After Meal", "Morning", "Evening", "Before Sleep")
+            val selectedSlot by viewModel.slot.collectAsState()
+
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                slots.forEach { slotOption ->
+
+                    val isSelected = slotOption == selectedSlot
+
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = if (isSelected)
+                                    MaterialTheme.colorScheme.tertiaryContainer
+                                else Color.Transparent,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected)
+                                    MaterialTheme.colorScheme.tertiaryContainer
+                                else Color.Gray,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .clickable(
+                                indication = LocalIndication.current,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                viewModel.onSlotChange(if (isSelected) "" else slotOption)
+                            }
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = slotOption,
+                            color = if (isSelected) Color.White else Color.Black,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Repeat Alarm?")
+                Spacer(modifier = Modifier.width(8.dp))
+                Switch(
+                    checked = isRepeat,
+                    onCheckedChange = { viewModel.onRepeatChange(it) }
+                )
+            }
+
+            if (isRepeat) {
+                FrequencyDropdown(
+                    selected = frequency,
+                    onSelected = { viewModel.onFrequencyChange(it) }
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
         }
 
-        if (isRepeat) {
-            FrequencyDropdown(
-                selected = frequency,
-                onSelected = { viewModel.onFrequencyChange(it) }
-            )
-        }
         Spacer(modifier = Modifier.height(10.dp))
 
         Button(

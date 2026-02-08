@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
             if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
             ) {
-                ActivityCompat.requestPermissions(
+                ActivityCompat.requestPermissions(ma
                     this,
                     arrayOf(POST_NOTIFICATIONS),
                     1001
@@ -38,15 +38,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             ReminderAppTheme(darkTheme = false) {
                 val navController = rememberNavController()
+                val sharedViewModel: com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+
                 androidx.navigation.compose.NavHost(
                     navController = navController,
                     startDestination = com.pratistha.reminderapp.presentation.navigation.Screen.Home.route
                 ) {
                     composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
-                        ReminderListUi(navController = navController)
+                        ReminderListUi(navController = navController, viewModel = sharedViewModel)
                     }
                     composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
-                        AddReminderScreen(navController = navController)
+                        AddReminderScreen(navController = navController, viewModel = sharedViewModel)
                     }
                 }
             }
