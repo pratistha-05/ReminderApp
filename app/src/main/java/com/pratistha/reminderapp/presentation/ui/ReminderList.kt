@@ -189,7 +189,10 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
                     actions = {
                         ToolTipIcon(
                             onAddClick = {
-                                scope.launch { sheetState.show() }
+                                scope.launch {
+                                    viewModel.clearEditing()
+                                    sheetState.show()
+                                }
                             }
                         )
                     }
@@ -259,9 +262,6 @@ fun ReminderListUi(viewModel: ReminderViewModel = hiltViewModel()) {
 
         /*potential ui issues:
         1. the edit works on previous time, it should not
-
-        2. while adding new reminder the input form  is taking previously saved reminder prefill
-        and button is "Saved"
 
         3. Timezone problem
 
