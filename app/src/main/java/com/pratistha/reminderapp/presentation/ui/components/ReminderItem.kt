@@ -18,6 +18,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Opacity
@@ -48,7 +49,8 @@ fun ReminderItem(
     androidx.compose.material3.Card(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .shadow(elevation = 4.dp, shape = RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = androidx.compose.material3.CardDefaults.cardColors(
             containerColor = if (item.isTaken) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surface,
@@ -58,138 +60,198 @@ fun ReminderItem(
             defaultElevation = 2.dp
         )
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
         ) {
-            // Icon / Image
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        if (item.isTaken) Color(0xFFC8E6C9) else MaterialTheme.colorScheme.primaryContainer,
-                        androidx.compose.foundation.shape.CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.meds_icon),
-                    contentDescription = "Medicine",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Text Information
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textDecoration = if (item.isTaken) androidx.compose.ui.text.style.TextDecoration.LineThrough else null
-                )
-                Spacer(modifier = Modifier.height(6.dp))
-                
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // Time Chip
-                    androidx.compose.material3.Surface(
-                        color = if (item.isTaken) Color(0xFFA5D6A7) else MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Alarm,
-                                contentDescription = null,
-                                modifier = Modifier.size(12.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = convertMillisToTime(item.timeinMillis),
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                    }
-
-                    // Dosage Chip
-                    androidx.compose.material3.Surface(
-                        color = if (item.isTaken) Color(0xFFA5D6A7) else MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = "${item.dosage} mg",
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                }
-                
-                if (item.slot.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = item.slot,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .background(
-                                color = if (item.isTaken) Color(0xFFA5D6A7) else MaterialTheme.colorScheme.surfaceVariant,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(4.dp)
-                    )
-                }
-
-                if (item.isRepeat) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Repeats ${item.frequency}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            // Actions
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (!item.isTaken) {
-                    IconButton(
-                        onClick = { onEdit(item) }
+                // Icon / Image
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                        if (item.isTaken) Color(0xFFC8E6C9) else MaterialTheme.colorScheme.primaryContainer,
+                            androidx.compose.foundation.shape.CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.meds_icon),
+                        contentDescription = "Medicine",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = Modifier.size(18.dp),
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.tertiaryContainer
+                        Text(
+                            text = item.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        // Status Chip
+                        StatusChip(isTaken = item.isTaken)
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        InfoChip(
+                            icon = Icons.Outlined.Alarm,
+                            text = convertMillisToTime(item.timeinMillis)
+                        )
+                        InfoChip(
+                            text = "${item.dosage} mg"
+                        )
+                        if (item.slot.isNotEmpty()) {
+                            InfoChip(text = item.slot)
+                        }
+                    }
+                     if (item.isRepeat) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Repeats ${item.frequency}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.Gray
                         )
                     }
                 }
+            }
+             Spacer(modifier = Modifier.height(12.dp))
 
-                IconButton(
-                    onClick = {
-                        cancelAlarm(context, item)
-                        viewModel.delete(item)
+            // Actions
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (!item.isTaken) {
+                    androidx.compose.material3.OutlinedButton(
+                        onClick = { onEdit(item) },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(16.dp),
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Edit",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                androidx.compose.material3.OutlinedButton(
+                    onClick = {
+                         cancelAlarm(context, item)
+                         viewModel.delete(item)
+                    },
+                     modifier = Modifier.height(32.dp),
+                    colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp)
                 ) {
                     Icon(
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
-                        tint = MaterialTheme.colorScheme.error
+                         tint = MaterialTheme.colorScheme.error
+                    )
+                     Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Delete",
+                        style = MaterialTheme.typography.labelMedium,
+                         color = MaterialTheme.colorScheme.error
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun StatusChip(isTaken: Boolean) {
+    val color = if (isTaken) Color(0xFF4CAF50) else Color(0xFFFFA726)
+    val text = if (isTaken) "Taken" else "Upcoming"
+    val icon = if (isTaken) Icons.Default.Check else null
+
+    androidx.compose.material3.Surface(
+        shape = RoundedCornerShape(50),
+        border = androidx.compose.foundation.BorderStroke(1.dp, color),
+        color = color.copy(alpha = 0.1f)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(12.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = color,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun InfoChip(
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    text: String
+) {
+    androidx.compose.material3.Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        shape = RoundedCornerShape(6.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(12.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
