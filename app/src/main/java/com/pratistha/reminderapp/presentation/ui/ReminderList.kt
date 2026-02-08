@@ -81,6 +81,17 @@ fun ReminderListUi(
                 }
             )
         },
+        floatingActionButton = {
+            androidx.compose.material3.FloatingActionButton(
+                onClick = {
+                    viewModel.clearEditing()
+                    navController.navigate(Screen.AddReminder.route)
+                },
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Reminder", tint = Color.White)
+            }
+        },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
