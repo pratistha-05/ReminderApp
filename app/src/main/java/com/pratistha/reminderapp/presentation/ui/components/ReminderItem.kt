@@ -134,56 +134,63 @@ fun ReminderItem(
             }
              Spacer(modifier = Modifier.height(12.dp))
 
-            // Actions
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (!item.isTaken) {
-                    androidx.compose.material3.OutlinedButton(
-                        onClick = { onEdit(item) },
-                        modifier = Modifier.height(32.dp),
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp)
-                    ) {
+            }
+        }
+
+        // Actions
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (!item.isTaken) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .clickable { onEdit(item) }
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            modifier = Modifier.size(16.dp),
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp)
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Edit",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
                 }
+            }
 
-                androidx.compose.material3.OutlinedButton(
-                    onClick = {
-                         cancelAlarm(context, item)
-                         viewModel.delete(item)
-                    },
-                     modifier = Modifier.height(32.dp),
-                    colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    ),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp)
-                ) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp)
+                    .clickable {
+                        cancelAlarm(context, item)
+                        viewModel.delete(item)
+                    }
+                     .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",
-                         tint = MaterialTheme.colorScheme.error
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(18.dp)
                     )
-                     Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Delete",
-                        style = MaterialTheme.typography.labelMedium,
-                         color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
