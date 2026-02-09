@@ -118,6 +118,7 @@ fun InputForm(
                 label = { Text("Name") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,

@@ -126,11 +126,12 @@ fun ReminderItem(
                             InfoChip(text = item.slot)
                         }
                     }
+                    Spacer(modifier = Modifier.height(4.dp))
                     if (item.isRepeat) {
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Repeats ${item.frequency}",
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.labelLarge,
                             color = Color.Gray
                         )
                     }
@@ -148,7 +149,7 @@ fun ReminderItem(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(48.dp)
+                        .height(40.dp)
                         .clickable(
                             indication = LocalIndication.current,
                             interactionSource = remember { MutableInteractionSource() }
@@ -208,7 +209,7 @@ fun ReminderItem(
 
 @Composable
 fun StatusChip(isTaken: Boolean) {
-    val color = if (isTaken) Color(0xFF4CAF50) else Color(0xFFFFA726)
+    val color = if (isTaken) Color(0xFF0B500E) else Color(0xFFFFA726)
     val text = if (isTaken) "Taken" else "Upcoming"
     val icon = if (isTaken) Icons.Default.Check else null
 
