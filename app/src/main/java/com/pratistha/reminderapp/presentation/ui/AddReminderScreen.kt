@@ -26,6 +26,8 @@ import com.pratistha.reminderapp.presentation.ui.components.InputForm
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.utils.alarmSetup
 import com.pratistha.reminderapp.utils.cancelAlarm
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
 import java.time.LocalDate
 
@@ -39,6 +41,7 @@ fun AddReminderScreen(
     val editingReminder by viewModel.editingReminder.collectAsState()
     val selectedDateStr by viewModel.selectedDate.collectAsState()
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -77,73 +80,75 @@ fun AddReminderScreen(
                         return@InputForm
                     }
 
-                    val daysToSchedule = if (isRepeat) {
-                        when (frequency) {
-                            Frequency.Daily -> 0..6
-                            Frequency.Alternate -> 0..6 step 2
-                            else -> 0..0
+                    scope.launch {
+                        val daysToSchedule = if (isRepeat) {
+                            when (frequency) {
+                                Frequency.Daily -> 0..6
+                                Frequency.Alternate -> 0..6 step 2
+                                else -> 0..0
+                            }
+                        } else {
+                            0..0
                         }
-                    } else {
-                        0..0
-                    }
 
-                    val existing = editingReminder
+                        val existing = editingReminder
 
-                    if (existing != null) {
-                        // -------- EDIT MODE --------
-                        val updatedReminder = existing.copy(
-                            name = name,
-                            dosage = dosage,
-                            slot = slot,
-                            timeinMillis = convertDateTimeToMillis(
-                                selectedDate,
-                                time
-                            ),
-                            isRepeat = isRepeat,
-                            frequency = frequency.value,
-                            date = selectedDate.toString()
-                        )
-
-                        viewModel.update(updatedReminder)
-
-                        try {
-                            cancelAlarm(context, existing)
-                            alarmSetup(context, updatedReminder)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    } else {
-                        // -------- ADD MODE --------
-                        for (i in daysToSchedule) {
-                            val dateForReminder = selectedDate.plusDays(i.toLong())
-                            val reminderTimeInMillis = convertDateTimeToMillis(
-                                dateForReminder,
-                                time
-                            )
-
-                            val reminder = Reminder(
+                        if (existing != null) {
+                            // -------- EDIT MODE --------
+                            val updatedReminder = existing.copy(
                                 name = name,
                                 dosage = dosage,
                                 slot = slot,
-                                timeinMillis = reminderTimeInMillis,
-                                isTaken = false,
+                                timeinMillis = convertDateTimeToMillis(
+                                    selectedDate,
+                                    time
+                                ),
                                 isRepeat = isRepeat,
                                 frequency = frequency.value,
-                                date = dateForReminder.toString(),
+                                date = selectedDate.toString()
                             )
 
-                            viewModel.insert(reminder)
+                            viewModel.update(updatedReminder).join()
 
                             try {
-                                alarmSetup(context, reminder)
+                                cancelAlarm(context, existing)
+                                alarmSetup(context, updatedReminder)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
-                        }
-                    }
+                        } else {
+                            // -------- ADD MODE --------
+                            for (i in daysToSchedule) {
+                                val dateForReminder = selectedDate.plusDays(i.toLong())
+                                val reminderTimeInMillis = convertDateTimeToMillis(
+                                    dateForReminder,
+                                    time
+                                )
 
-                    viewModel.clearEditing()
-                    navController.popBackStack()
+                                val reminder = Reminder(
+                                    name = name,
+                                    dosage = dosage,
+                                    slot = slot,
+                                    timeinMillis = reminderTimeInMillis,
+                                    isTaken = false,
+                                    isRepeat = isRepeat,
+                                    frequency = frequency.value,
+                                    date = dateForReminder.toString(),
+                                )
+
+                                val newId = viewModel.insertSuspend(reminder)
+
+                                try {
+                                    alarmSetup(context, reminder.copy(id = newId.toInt()))
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+
+                        viewModel.clearEditing()
+                        navController.popBackStack()
+                    }
                 }
             )
         }

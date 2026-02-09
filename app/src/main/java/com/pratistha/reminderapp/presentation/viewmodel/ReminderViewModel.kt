@@ -101,6 +101,10 @@ class ReminderViewModel @Inject constructor(
         insertUseCase.invoke(reminder)
     }
 
+    suspend fun insertSuspend(reminder: Reminder): Long {
+        return insertUseCase.invoke(reminder)
+    }
+
     fun delete(reminder: Reminder) = viewModelScope.launch {
         deleteUseCase.invoke(reminder)
     }
