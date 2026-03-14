@@ -60,6 +60,7 @@ import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.navigation.Screen
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis
+import com.pratistha.reminderapp.utils.handleVoiceResult
 import com.pratistha.reminderapp.utils.startVoiceRecognition
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,40 +79,14 @@ fun ReminderListUi(
     }
     val voiceLauncher =
         rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartActivityForResult()
+            ActivityResultContracts.StartActivityForResult()
         ) { result ->
 
-            if (result.resultCode == Activity.RESULT_OK) {
-
-                val data = result.data
-                val matches = data?.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS
-                )
-
-                val spokenText = matches?.get(0) ?: return@rememberLauncherForActivityResult
-
-                val parsed = VoiceReminderParser.parse(spokenText)
-
-                if (parsed != null) {
-
-                    val (title, time) = parsed
-
-                    val date = LocalDate.now()
-
-                    val reminder = Reminder(
-                        name = title,
-                        dosage = "1",
-                        slot = "",
-                        timeinMillis = convertDateTimeToMillis(date, time),
-                        isTaken = false,
-                        isRepeat = false,
-                        frequency = Frequency.Once.value,
-                        date = date.toString()
-                    )
-
-                    viewModel.insert(reminder)
-                }
-            }
+            handleVoiceResult(
+                result.resultCode,
+                result.data,
+                viewModel
+            )
         }
 
     Scaffold(
@@ -133,33 +108,6 @@ fun ReminderListUi(
             )
         },
         floatingActionButton = {
-            Column {
-
-                FloatingActionButton(
-                    onClick = {
-
-                        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-
-                        intent.putExtra(
-                            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                        )
-
-                        intent.putExtra(
-                            RecognizerIntent.EXTRA_PROMPT,
-                            "Say something like: Create reminder for meds at 8 pm"
-                        )
-
-                        voiceLauncher.launch(intent)
-
-                    },
-//                    onClick = { startVoiceRecognition(context, viewModel) },
-                    containerColor = Color.Red
-                ) {
-                    Icon(Icons.Default.Mic, contentDescription = "Voice Reminder")
-                }
-
-                Spacer(Modifier.height(12.dp))
 
                 FloatingActionButton(
                     onClick = {
@@ -169,66 +117,85 @@ fun ReminderListUi(
                 ) {
                     Icon(Icons.Default.Add, null)
                 }
-            }
         }
 ,
         content = { paddingValues ->
-            Column(
+            Box(
                 modifier = Modifier
-                    .padding(paddingValues)
                     .fillMaxSize()
+                    .padding(paddingValues)
             ) {
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                        .fillMaxSize()
                 ) {
-                    LazyRow(
+                    Box(
                         modifier = Modifier
-                            .wrapContentWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        items(days) { date ->
-                            DateRowItem(
-                                selectedDate,
-                                date,
-                                onDateSelect = {
-                                    viewModel.selectDate(it.toString())
-                                }
-                            )
-                        }
-                    }
-                }
-
-
-                when {
-                    list.value.isLoading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                        LazyRow(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .padding(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            CircularProgressIndicator()
+                            items(days) { date ->
+                                DateRowItem(
+                                    selectedDate,
+                                    date,
+                                    onDateSelect = {
+                                        viewModel.selectDate(it.toString())
+                                    }
+                                )
+                            }
                         }
                     }
 
-                    list.value.list.isEmpty() -> {
-                        EmptyReminderState()
-                    }
 
-                    else -> {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(list.value.list) { item ->
-                                ReminderItem(item = item, viewModel = viewModel, context) { reminderToEdit ->
-                                    viewModel.editReminder(reminderToEdit)
-                                    viewModel.selectDate(reminderToEdit.date)
-                                    navController.navigate(Screen.AddReminder.route)
+                    when {
+                        list.value.isLoading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                        list.value.list.isEmpty() -> {
+                            EmptyReminderState()
+                        }
+
+                        else -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                items(list.value.list) { item ->
+                                    ReminderItem(
+                                        item = item,
+                                        viewModel = viewModel,
+                                        context
+                                    ) { reminderToEdit ->
+                                        viewModel.editReminder(reminderToEdit)
+                                        viewModel.selectDate(reminderToEdit.date)
+                                        navController.navigate(Screen.AddReminder.route)
+                                    }
                                 }
                             }
                         }
                     }
+                }
+
+                FloatingActionButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp),
+                    onClick = {
+                        startVoiceRecognition(voiceLauncher)
+                    },
+                ) {
+                    Icon(Icons.Default.Mic, contentDescription = "Voice Reminder")
                 }
             }
         }

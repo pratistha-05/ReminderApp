@@ -1,18 +1,17 @@
 package com.pratistha.reminderapp.utils
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
-import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
+import androidx.activity.result.ActivityResultLauncher
 import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import java.time.LocalDate
 
-fun startVoiceRecognition(context: Context, viewModel: ReminderViewModel) {
-
+fun startVoiceRecognition(
+    launcher: ActivityResultLauncher<Intent>
+) {
     val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
 
     intent.putExtra(
@@ -22,51 +21,44 @@ fun startVoiceRecognition(context: Context, viewModel: ReminderViewModel) {
 
     intent.putExtra(
         RecognizerIntent.EXTRA_PROMPT,
-        "Say something like 'Create reminder for medicine at 8 pm'"
+        "Say something like: Create reminder for meds at 8 pm"
     )
 
-    val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+    launcher.launch(intent)
+}
 
-    recognizer.setRecognitionListener(object : RecognitionListener {
 
-        override fun onResults(results: Bundle) {
+fun handleVoiceResult(
+    resultCode: Int,
+    data: Intent?,
+    viewModel: ReminderViewModel
+) {
+    if (resultCode != Activity.RESULT_OK) return
 
-            val data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+    val matches = data?.getStringArrayListExtra(
+        RecognizerIntent.EXTRA_RESULTS
+    )
 
-            val spokenText = data?.get(0) ?: return
+    val spokenText = matches?.get(0) ?: return
 
-            val parsed = VoiceReminderParser.parse(spokenText)
+    val parsed = VoiceReminderParser.parse(spokenText)
 
-            if (parsed != null) {
+    if (parsed != null) {
 
-                val (title, time) = parsed
+        val (title, time) = parsed
+        val date = LocalDate.now()
 
-                val date = LocalDate.now()
+        val reminder = Reminder(
+            name = title,
+            dosage = "1",
+            slot = "",
+            timeinMillis = convertDateTimeToMillis(date, time),
+            isTaken = false,
+            isRepeat = false,
+            frequency = Frequency.Once.value,
+            date = date.toString()
+        )
 
-                val reminder = Reminder(
-                    name = title,
-                    dosage = "1",
-                    slot = "",
-                    timeinMillis = convertDateTimeToMillis(date, time),
-                    isTaken = false,
-                    isRepeat = false,
-                    frequency = Frequency.Daily.value,
-                    date = date.toString()
-                )
-
-                viewModel.insert(reminder)
-            }
-        }
-
-        override fun onError(error: Int) {}
-        override fun onReadyForSpeech(params: Bundle?) {}
-        override fun onBeginningOfSpeech() {}
-        override fun onRmsChanged(rmsdB: Float) {}
-        override fun onBufferReceived(buffer: ByteArray?) {}
-        override fun onEndOfSpeech() {}
-        override fun onPartialResults(partialResults: Bundle?) {}
-        override fun onEvent(eventType: Int, params: Bundle?) {}
-    })
-
-    recognizer.startListening(intent)
+        viewModel.insert(reminder)
+    }
 }
