@@ -17,14 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Opacity
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
-import com.pratistha.reminderapp.utils.cancelAlarm
+import com.pratistha.reminderapp.utils.alarm.cancelAlarm
 import com.pratistha.reminderapp.utils.convertMillisToTime
 
 @Composable

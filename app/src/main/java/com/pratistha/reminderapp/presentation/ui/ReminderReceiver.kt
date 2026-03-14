@@ -13,8 +13,8 @@ import com.pratistha.reminderapp.utils.REMINDER
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.domain.useCases.UpdateUseCase
 import com.google.gson.Gson
-import com.pratistha.reminderapp.presentation.AlarmService
-import com.pratistha.reminderapp.utils.cancelAlarm
+import com.pratistha.reminderapp.utils.alarm.AlarmService
+import com.pratistha.reminderapp.utils.alarm.cancelAlarm
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject

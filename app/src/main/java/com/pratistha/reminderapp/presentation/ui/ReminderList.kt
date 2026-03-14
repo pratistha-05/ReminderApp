@@ -1,17 +1,12 @@
 package com.pratistha.reminderapp.presentation.ui
 
-import android.app.Activity
-import android.content.Intent
-import android.speech.RecognizerIntent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -36,7 +31,6 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.*
@@ -53,15 +47,11 @@ import com.pratistha.reminderapp.presentation.ui.components.EmptyReminderState
 import com.pratistha.reminderapp.presentation.ui.components.ReminderItem
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import java.time.LocalDate
-import kotlinx.coroutines.delay
 
 import androidx.navigation.NavController
-import com.pratistha.reminderapp.data.local.Frequency
-import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.navigation.Screen
-import com.pratistha.reminderapp.utils.convertDateTimeToMillis
-import com.pratistha.reminderapp.utils.handleVoiceResult
-import com.pratistha.reminderapp.utils.startVoiceRecognition
+import com.pratistha.reminderapp.utils.voice.handleVoiceResult
+import com.pratistha.reminderapp.utils.voice.startVoiceRecognition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -200,18 +190,7 @@ fun ReminderListUi(
             }
         }
     )
-
-        /*potential ui issues:
-        1. the edit works on previous time, it should not
-
-        3. Timezone problem
-
-        4. bottomsheet is hiding behind system ui
-
-        4. if im adding reminder at 00:02 for next day, reminder is not
-         */
-
-    }
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

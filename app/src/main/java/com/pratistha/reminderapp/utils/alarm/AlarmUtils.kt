@@ -1,4 +1,4 @@
-package com.pratistha.reminderapp.utils
+package com.pratistha.reminderapp.utils.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -10,6 +10,7 @@ import android.util.Log
 import com.pratistha.reminderapp.data.local.Reminder
 import com.google.gson.Gson
 import com.pratistha.reminderapp.presentation.ui.ReminderReceiver
+import com.pratistha.reminderapp.utils.REMINDER
 
 
 fun alarmSetup(context: Context, reminder: Reminder) {

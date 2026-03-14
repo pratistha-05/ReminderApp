@@ -1,4 +1,4 @@
-package com.pratistha.reminderapp.presentation
+package com.pratistha.reminderapp.utils.alarm
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -7,12 +7,13 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.google.gson.Gson
 import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.data.local.Reminder
+import com.pratistha.reminderapp.presentation.ShakeDetector
+import com.pratistha.reminderapp.presentation.ui.ReminderReceiver
 import com.pratistha.reminderapp.utils.REMINDER
 import com.pratistha.reminderapp.utils.channelId
-import com.google.gson.Gson
-import com.pratistha.reminderapp.presentation.ui.ReminderReceiver
 
 class AlarmService : Service() {
 

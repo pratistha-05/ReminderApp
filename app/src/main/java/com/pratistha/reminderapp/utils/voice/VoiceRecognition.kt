@@ -1,4 +1,4 @@
-package com.pratistha.reminderapp.utils
+package com.pratistha.reminderapp.utils.voice
 
 import android.app.Activity
 import android.content.Intent
@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
+import com.pratistha.reminderapp.utils.convertDateTimeToMillis
 import java.time.LocalDate
 
 fun startVoiceRecognition(
@@ -21,7 +22,7 @@ fun startVoiceRecognition(
 
     intent.putExtra(
         RecognizerIntent.EXTRA_PROMPT,
-        "Say something like: Create reminder for meds at 8 pm"
+        "Say something like: Set reminder for meds at 8 pm"
     )
 
     launcher.launch(intent)

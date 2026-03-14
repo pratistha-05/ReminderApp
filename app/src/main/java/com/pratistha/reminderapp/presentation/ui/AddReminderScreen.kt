@@ -24,8 +24,8 @@ import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.ui.components.InputForm
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
-import com.pratistha.reminderapp.utils.alarmSetup
-import com.pratistha.reminderapp.utils.cancelAlarm
+import com.pratistha.reminderapp.utils.alarm.alarmSetup
+import com.pratistha.reminderapp.utils.alarm.cancelAlarm
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import com.pratistha.reminderapp.utils.convertDateTimeToMillis

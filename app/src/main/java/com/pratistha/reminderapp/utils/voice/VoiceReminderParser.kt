@@ -1,9 +1,13 @@
+package com.pratistha.reminderapp.utils.voice
+
+import com.pratistha.reminderapp.utils.regexForVoice
+
 object VoiceReminderParser {
 
     fun parse(text: String): Pair<String, String>? {
 
         val regex = Regex(
-            "(?:create )?(?:a )?reminder(?: for)? (.*?) (?:at|are)? (\\d{1,2})(?::(\\d{2}))? ?(am|pm|a\\.m\\.|p\\.m\\.)",
+            regexForVoice,
             RegexOption.IGNORE_CASE
         )
 
