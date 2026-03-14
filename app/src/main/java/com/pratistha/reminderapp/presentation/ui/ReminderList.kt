@@ -1,10 +1,17 @@
 package com.pratistha.reminderapp.presentation.ui
 
+import android.app.Activity
+import android.content.Intent
+import android.speech.RecognizerIntent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -15,9 +22,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RichTooltip
@@ -47,7 +56,11 @@ import java.time.LocalDate
 import kotlinx.coroutines.delay
 
 import androidx.navigation.NavController
+import com.pratistha.reminderapp.data.local.Frequency
+import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.navigation.Screen
+import com.pratistha.reminderapp.utils.convertDateTimeToMillis
+import com.pratistha.reminderapp.utils.startVoiceRecognition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +76,44 @@ fun ReminderListUi(
     val days = remember {
         (0..6).map { today.plusDays(it.toLong()) }
     }
+    val voiceLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+
+            if (result.resultCode == Activity.RESULT_OK) {
+
+                val data = result.data
+                val matches = data?.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS
+                )
+
+                val spokenText = matches?.get(0) ?: return@rememberLauncherForActivityResult
+
+                val parsed = VoiceReminderParser.parse(spokenText)
+
+                if (parsed != null) {
+
+                    val (title, time) = parsed
+
+                    val date = LocalDate.now()
+
+                    val reminder = Reminder(
+                        name = title,
+                        dosage = "1",
+                        slot = "",
+                        timeinMillis = convertDateTimeToMillis(date, time),
+                        isTaken = false,
+                        isRepeat = false,
+                        frequency = Frequency.Once.value,
+                        date = date.toString()
+                    )
+
+                    viewModel.insert(reminder)
+                }
+            }
+        }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -82,16 +133,45 @@ fun ReminderListUi(
             )
         },
         floatingActionButton = {
-            androidx.compose.material3.FloatingActionButton(
-                onClick = {
-                    viewModel.clearEditing()
-                    navController.navigate(Screen.AddReminder.route)
-                },
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Reminder", tint = Color.White)
+            Column {
+
+                FloatingActionButton(
+                    onClick = {
+
+                        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+
+                        intent.putExtra(
+                            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                        )
+
+                        intent.putExtra(
+                            RecognizerIntent.EXTRA_PROMPT,
+                            "Say something like: Create reminder for meds at 8 pm"
+                        )
+
+                        voiceLauncher.launch(intent)
+
+                    },
+//                    onClick = { startVoiceRecognition(context, viewModel) },
+                    containerColor = Color.Red
+                ) {
+                    Icon(Icons.Default.Mic, contentDescription = "Voice Reminder")
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.clearEditing()
+                        navController.navigate(Screen.AddReminder.route)
+                    }
+                ) {
+                    Icon(Icons.Default.Add, null)
+                }
             }
-        },
+        }
+,
         content = { paddingValues ->
             Column(
                 modifier = Modifier
