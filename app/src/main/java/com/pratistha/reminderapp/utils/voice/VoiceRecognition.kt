@@ -6,6 +6,8 @@ import android.content.Intent
 import android.speech.RecognizerIntent
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import android.app.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
@@ -32,6 +34,7 @@ fun startVoiceRecognition(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 fun handleVoiceResult(
     resultCode: Int,
     data: Intent?,
@@ -70,15 +73,14 @@ fun handleVoiceResult(
 
     // if not tomorrow but time already passed → shift to tomorrow
     if (!parsed.isTomorrow && reminderMillis < now) {
-//        date = date.plusDays(1)
-//        reminderMillis = convertDateTimeToMillis(date, parsed.time)
-
-        return Toast.makeText(
-            context,
-            "Time already passed today. Reminder set for tomorrow.",
-            Toast.LENGTH_LONG
-        ).show()
+        AlertDialog.Builder(context)
+            .setTitle("Invalid Time")
+            .setMessage("Time already passed today. Please select a future time for reminder.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+        return
     }
+
 
     val reminder = Reminder(
         name = parsed.title,
@@ -99,8 +101,3 @@ fun handleVoiceResult(
         e.printStackTrace()
     }
 }
-/*
-1. if im adding 8pm, 8am is getting added(24-hr format), its not parsing pm
-2. tomorrow needs to be set
-3. past time should not be set - show toast
- */
