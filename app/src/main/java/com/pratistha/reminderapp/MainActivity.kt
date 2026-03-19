@@ -55,13 +55,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-/*
-P0:
-test the datewise remiders
-change the ui
-1. settings new screen, top bar change
-2. validations in input field
-3. swipe to delete or taken
-4. to take(upcoming), taken
-5. ai chat bot for reminders
- */
