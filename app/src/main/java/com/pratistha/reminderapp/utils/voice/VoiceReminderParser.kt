@@ -1,10 +1,11 @@
 package com.pratistha.reminderapp.utils.voice
 
+import com.pratistha.reminderapp.data.local.VoiceReminder
 import com.pratistha.reminderapp.utils.regexForVoice
 
 object VoiceReminderParser {
 
-    fun parse(text: String): Pair<String, String>? {
+    fun parse(text: String): VoiceReminder? {
 
         val regex = Regex(
             regexForVoice,
@@ -14,18 +15,28 @@ object VoiceReminderParser {
         val match = regex.find(text) ?: return null
 
         val title = match.groupValues[1].trim()
+
         val hour = match.groupValues[2].toInt()
+
         val minutes = match.groupValues[3].ifEmpty { "00" }
+
         val ampm = match.groupValues[4].lowercase()
 
         val hour24 = when {
-            ampm.contains("pm") && hour < 12 -> hour + 12
-            ampm.contains("am") && hour == 12 -> 0
+            hour > 12 -> hour
+            ampm == "pm" && hour < 12 -> hour + 12
+            ampm == "am" && hour == 12 -> 0
             else -> hour
         }
 
         val time = String.format("%02d:%02d", hour24, minutes.toInt())
 
-        return title to time
+        val isTomorrow = text.contains("tomorrow", ignoreCase = true)
+
+        return VoiceReminder(
+            title = title,
+            time = time,
+            isTomorrow = isTomorrow
+        )
     }
 }
