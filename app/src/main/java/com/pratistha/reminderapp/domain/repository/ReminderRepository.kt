@@ -9,4 +9,5 @@ interface  ReminderRepository {
     suspend fun update(reminder: Reminder)
     fun getAllReminders(): Flow<List<Reminder>>
     fun getRemindersForDate(date: String): Flow<List<Reminder>>
+    suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String?
 }

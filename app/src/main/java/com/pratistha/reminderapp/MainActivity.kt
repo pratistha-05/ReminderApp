@@ -55,3 +55,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+/*
+close is not updating in UI
+use medicine api for name list
+summary- taken missed total
+schedule daily for 1 month initially
+swipe calendar rows for 1 week
+ */

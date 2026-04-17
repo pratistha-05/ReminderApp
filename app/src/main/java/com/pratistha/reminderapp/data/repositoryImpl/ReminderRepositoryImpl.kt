@@ -24,4 +24,6 @@ class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepo
         return reminderDao.getRemindersByDate(date)
     }
 
+    override suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String? =
+        reminderDao.getLastDateForGroup(name, slot, frequency)
 }

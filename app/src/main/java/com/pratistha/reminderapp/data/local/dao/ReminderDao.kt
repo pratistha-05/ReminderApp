@@ -25,4 +25,7 @@ interface ReminderDao{
 
     @Query("SELECT * FROM  Reminder WHERE date=:date ORDER BY timeInMillis ASC")
     fun getRemindersByDate(date: String): Flow<List<Reminder>>
+
+    @Query("SELECT MAX(date) FROM Reminder WHERE name=:name AND slot=:slot AND frequency=:frequency")
+    suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String?
 }

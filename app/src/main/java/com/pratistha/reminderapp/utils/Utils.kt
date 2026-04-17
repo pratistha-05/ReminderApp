@@ -1,5 +1,6 @@
 package com.pratistha.reminderapp.utils
 
+import com.pratistha.reminderapp.data.local.Frequency
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -24,7 +25,13 @@ fun convertDateTimeToMillis(
 
     return calendar.timeInMillis
 }
-
+fun getDaysToSchedule(frequency: Frequency): IntProgression {
+    return when (frequency) {
+        Frequency.Daily -> 0..6
+        Frequency.Alternate -> 0..6 step 2
+        else -> 0..0
+    }
+}
 
 fun convertMillisToTime(timeInMillis: Long): String {
   val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
