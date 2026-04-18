@@ -44,9 +44,6 @@ class ReminderViewModel @Inject constructor(
     private val _reminderTime = MutableStateFlow("")
     val reminderTime = _reminderTime.asStateFlow()
 
-    private val _isRepeat = MutableStateFlow(false)
-    val isRepeat = _isRepeat.asStateFlow()
-
     private val _frequency = MutableStateFlow(Frequency.Daily)
     val frequency = _frequency.asStateFlow()
 
@@ -56,7 +53,6 @@ class ReminderViewModel @Inject constructor(
     fun onNameChange(newName: String) { _reminderName.value = newName }
     fun onDosageChange(newDosage: Int) { _reminderDosage.value = newDosage }
     fun onTimeChange(newTime: String) { _reminderTime.value = newTime }
-    fun onRepeatChange(repeat: Boolean) { _isRepeat.value = repeat }
     fun onFrequencyChange(newFrequency: Frequency) { _frequency.value = newFrequency }
     fun onSlotChange(newSlot: String) { _slot.value = newSlot }
 
@@ -65,7 +61,6 @@ class ReminderViewModel @Inject constructor(
         _reminderName.value = reminder.name
         _reminderDosage.value = reminder.dosage.toIntOrNull() ?: 0
         _reminderTime.value = com.pratistha.reminderapp.utils.convertMillisToTime(reminder.timeinMillis)
-        _isRepeat.value = reminder.isRepeat
         _frequency.value = Frequency.values().find { it.value == reminder.frequency } ?: Frequency.Daily
         _slot.value = reminder.slot
     }
@@ -75,7 +70,6 @@ class ReminderViewModel @Inject constructor(
         _reminderName.value = ""
         _reminderDosage.value = 0
         _reminderTime.value = ""
-        _isRepeat.value = false
         _frequency.value = Frequency.Daily
         _slot.value = ""
     }

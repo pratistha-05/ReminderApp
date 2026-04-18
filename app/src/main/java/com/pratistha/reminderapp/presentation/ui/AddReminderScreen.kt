@@ -72,14 +72,14 @@ fun AddReminderScreen(
                     val name = viewModel.reminderName.value
                     val dosage = viewModel.reminderDosage.value.toString()
                     val time = viewModel.reminderTime.value
-                    val isRepeat = viewModel.isRepeat.value
+                    //keeping repeat as false initially
+                    val isRepeat = false
                     val frequency = viewModel.frequency.value
                     val slot = viewModel.slot.value
 
                     if (name.isBlank() || dosage.isBlank() || time.isEmpty()) {
                         return@InputForm
                     }
-
                     scope.launch {
                         val daysToSchedule = if (isRepeat) {
                             when (frequency) {
@@ -99,22 +99,37 @@ fun AddReminderScreen(
                                 name = name,
                                 dosage = dosage,
                                 slot = slot,
-                                timeinMillis = convertDateTimeToMillis(
-                                    selectedDate,
-                                    time
-                                ),
+                                timeinMillis = convertDateTimeToMillis(selectedDate, time),
                                 isRepeat = isRepeat,
                                 frequency = frequency.value,
                                 date = selectedDate.toString()
                             )
 
+                            // Update today
                             viewModel.update(updatedReminder).join()
 
-                            try {
-                                cancelAlarm(context, existing)
-                                alarmSetup(context, updatedReminder)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                            cancelAlarm(context, existing)
+                            alarmSetup(context, updatedReminder)
+
+                            // Handle repeat (clean way)
+                            val days = when {
+                                !isRepeat -> emptyList()
+                                frequency == Frequency.Daily -> (1..6)
+                                frequency == Frequency.Alternate -> (2..6 step 2)
+                                else -> emptyList()
+                            }
+
+                            days.forEach { i ->
+                                val dateForReminder = selectedDate.plusDays(i.toLong())
+
+                                val reminder = updatedReminder.copy(
+                                    id = 0,
+                                    timeinMillis = convertDateTimeToMillis(dateForReminder, time),
+                                    date = dateForReminder.toString()
+                                )
+
+                                val newId = viewModel.insertSuspend(reminder)
+                                alarmSetup(context, reminder.copy(id = newId.toInt()))
                             }
                         } else {
                             // -------- ADD MODE --------

@@ -34,7 +34,7 @@ fun alarmSetup(context: Context, reminder: Reminder) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     try {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminder.timeinMillis, pendingIntent)
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminder.timeinMillis, pendingIntent)
     } catch (e: SecurityException) {
         Log.e("ReminderApp", "SecurityException while setting alarm: ${e.message}")
     }
