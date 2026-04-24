@@ -61,6 +61,8 @@ import java.util.Calendar
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import com.pratistha.reminderapp.data.local.ReminderSlot
+import com.pratistha.reminderapp.utils.getSelectedDateTimeMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,11 +78,16 @@ fun InputForm(
     val frequency by viewModel.frequency.collectAsState()
     val isEditable by viewModel.editingReminder.collectAsState()
     val focusManager = LocalFocusManager.current
+    val nowMillis = System.currentTimeMillis()
 
     val context = LocalContext.current
     val selectedDateStr by viewModel.selectedDate.collectAsState()
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
+    val selectedMillis = getSelectedDateTimeMillis(selectedDate, time)
+    val isPastTime = selectedMillis < nowMillis
     val scrollState = rememberScrollState()
+    val slots = ReminderSlot.values().map { it.label }
+    val selectedSlot by viewModel.slot.collectAsState()
 
     Column(
         modifier = Modifier
@@ -92,13 +99,6 @@ fun InputForm(
                 .weight(1f)
                 .verticalScroll(scrollState),
         ) {
-            //        Text(
-            //            text = "Add a new reminder",
-            //            style = TextStyle(fontSize = 20.sp, color = Color(0xFF004D40)),
-            //            modifier = Modifier.padding(top = 20.dp).fillMaxWidth(),
-            //            textAlign = TextAlign.Center
-            //        )
-            //        Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Enter details",
                 style = TextStyle(fontSize = 20.sp),
@@ -202,9 +202,6 @@ fun InputForm(
             Text(text = "Select Slots")
             Spacer(modifier = Modifier.height(8.dp))
 
-            val slots = listOf("Before Meal", "After Meal", "Morning", "Evening", "Before Sleep")
-            val selectedSlot by viewModel.slot.collectAsState()
-
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -277,13 +274,20 @@ fun InputForm(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                onSaveClick()
+                if (isPastTime) {
+                    Toast.makeText(context, "Please select a future time", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+                else {
+                    onSaveClick()
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer
             )
 
         ) {
+
             if (isEditable == null)
                 Text(text = "Add Reminder", color = Color.White)
             else
@@ -318,10 +322,6 @@ fun showTimePicker(
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                Log.d(
-                    "TimePicker",
-                    "Selected date-time millis: $selectedMillis"
-                )
                 onTimeClick(formattedTime)
             }
         },

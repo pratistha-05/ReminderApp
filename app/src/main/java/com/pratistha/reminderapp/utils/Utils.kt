@@ -3,6 +3,7 @@ package com.pratistha.reminderapp.utils
 import com.pratistha.reminderapp.data.local.Frequency
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -30,6 +31,16 @@ fun getDaysToSchedule(frequency: Frequency): IntProgression {
         Frequency.Daily -> 0..6
         Frequency.Alternate -> 0..6 step 2
         else -> 0..0
+    }
+}
+
+fun getSelectedDateTimeMillis(date: LocalDate, time: String): Long {
+    return try {
+        val (hour, minute) = time.split(":").map { it.toInt() }
+        val dateTime = date.atTime(hour, minute)
+        dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    } catch (e: Exception) {
+        0L
     }
 }
 

@@ -13,6 +13,6 @@ data class Reminder(
     val timeinMillis:Long,
     var isTaken:Boolean,
     val isRepeat:Boolean,
-    val frequency: String= Frequency.Daily.value,
+    val frequency: String,
     val date: String,
 )
