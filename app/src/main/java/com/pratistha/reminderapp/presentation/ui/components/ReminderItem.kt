@@ -21,6 +21,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DoNotDisturb
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material3.Icon
@@ -47,6 +48,8 @@ fun ReminderItem(
     context: Context,
     onEdit: (Reminder) -> Unit
 ) {
+    val now = System.currentTimeMillis()
+
     androidx.compose.material3.Card(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -54,7 +57,11 @@ fun ReminderItem(
             .shadow(elevation = 4.dp, shape = RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = androidx.compose.material3.CardDefaults.cardColors(
-            containerColor = if (item.isTaken) Color(0xFFE8F5E9) else MaterialTheme.colorScheme.surface,
+            containerColor = when {
+                item.timeinMillis > now -> MaterialTheme.colorScheme.surface
+                item.isTaken -> Color(0xFFE8F5E9)
+                else -> Color(0xFFFFEBEE)
+            },
             contentColor = if (item.isTaken) Color(0xFF1B5E20) else MaterialTheme.colorScheme.onSurface
         ),
         elevation = androidx.compose.material3.CardDefaults.cardElevation(
@@ -103,7 +110,7 @@ fun ReminderItem(
                         )
 
                         // Status Chip
-                        StatusChip(isTaken = item.isTaken)
+                        StatusChip( item)
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -205,10 +212,23 @@ fun ReminderItem(
 }
 
 @Composable
-fun StatusChip(isTaken: Boolean) {
-    val color = if (isTaken) Color(0xFF0B500E) else Color(0xFFFFA726)
-    val text = if (isTaken) "Taken" else "Upcoming"
-    val icon = if (isTaken) Icons.Default.Check else null
+fun StatusChip(item: Reminder) {
+
+    val now = System.currentTimeMillis()
+
+    val (text, color, icon) = when {
+        item.timeinMillis > now -> {
+            Triple("Upcoming", Color(0xFFFFA726), null)
+        }
+
+        item.isTaken -> {
+            Triple("Taken", Color(0xFF0B500E), Icons.Default.Check)
+        }
+
+        else -> {
+            Triple("Skipped", Color(0xFFD32F2F), Icons.Default.DoNotDisturb)
+        }
+    }
 
     androidx.compose.material3.Surface(
         shape = RoundedCornerShape(50),
@@ -219,6 +239,7 @@ fun StatusChip(isTaken: Boolean) {
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             if (icon != null) {
                 Icon(
                     imageVector = icon,
@@ -228,6 +249,7 @@ fun StatusChip(isTaken: Boolean) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
             }
+
             Text(
                 text = text,
                 style = MaterialTheme.typography.labelSmall,
