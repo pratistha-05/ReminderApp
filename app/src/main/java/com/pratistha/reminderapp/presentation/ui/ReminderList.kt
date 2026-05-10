@@ -14,11 +14,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
@@ -46,16 +49,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pratistha.reminderapp.presentation.ui.components.DateRowItem
 import com.pratistha.reminderapp.presentation.ui.components.EmptyReminderState
-import com.pratistha.reminderapp.presentation.ui.components.ReminderItem
+import com.pratistha.reminderapp.presentation.ui.components.listItem.ReminderItem
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import java.time.LocalDate
 
 import androidx.navigation.NavController
 import com.pratistha.reminderapp.presentation.navigation.Screen
+import com.pratistha.reminderapp.presentation.ui.components.listItem.SwipeBackground
+import com.pratistha.reminderapp.utils.alarm.cancelAlarm
 import com.pratistha.reminderapp.utils.voice.handleVoiceResult
 import com.pratistha.reminderapp.utils.voice.startVoiceRecognition
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ReminderListUi(
     navController: NavController,
@@ -167,16 +172,37 @@ fun ReminderListUi(
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                items(list.value.list) { item ->
-                                    ReminderItem(
-                                        item = item,
-                                        viewModel = viewModel,
-                                        context
-                                    ) { reminderToEdit ->
-                                        viewModel.editReminder(reminderToEdit)
-                                        viewModel.selectDate(reminderToEdit.date)
-                                        navController.navigate(Screen.AddReminder.route)
-                                    }
+                                items(list.value.list, key = { it.id }) { item ->
+
+                                    val dismissState = rememberDismissState(
+                                        confirmStateChange = { dismissValue ->
+
+                                            if (dismissValue == DismissValue.DismissedToStart) {
+                                                cancelAlarm(context, item)
+                                                viewModel.update(item.copy(isTaken = true))
+                                            }
+                                            false
+                                        }
+                                    )
+
+                                    SwipeToDismiss(
+                                        state = dismissState,
+                                        directions = setOf(DismissDirection.EndToStart),
+                                        background = {
+                                            SwipeBackground(dismissState)
+                                        },
+                                        dismissContent = {
+                                            ReminderItem(
+                                                item = item,
+                                                viewModel = viewModel,
+                                                context = context
+                                            ) { reminderToEdit ->
+                                                viewModel.editReminder(reminderToEdit)
+                                                viewModel.selectDate(reminderToEdit.date)
+                                                navController.navigate(Screen.AddReminder.route)
+                                            }
+                                        }
+                                    )
                                 }
                             }
                         }
