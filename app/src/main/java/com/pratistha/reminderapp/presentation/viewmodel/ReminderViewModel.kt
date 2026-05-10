@@ -44,6 +44,9 @@ class ReminderViewModel @Inject constructor(
     private val _reminderTime = MutableStateFlow("")
     val reminderTime = _reminderTime.asStateFlow()
 
+    private val _isRepeat = MutableStateFlow(false)
+    val isRepeat = _isRepeat.asStateFlow()
+
     private val _frequency = MutableStateFlow(Frequency.Daily)
     val frequency = _frequency.asStateFlow()
 
@@ -55,6 +58,9 @@ class ReminderViewModel @Inject constructor(
     fun onTimeChange(newTime: String) { _reminderTime.value = newTime }
     fun onFrequencyChange(newFrequency: Frequency) { _frequency.value = newFrequency }
     fun onSlotChange(newSlot: String) { _slot.value = newSlot }
+
+    fun onRepeatChange(repeat: Boolean) { _isRepeat.value = repeat }
+
 
     fun editReminder(reminder: Reminder) {
         _editingReminder.value = reminder

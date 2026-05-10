@@ -73,7 +73,7 @@ fun AddReminderScreen(
                     val dosage = viewModel.reminderDosage.value.toString()
                     val time = viewModel.reminderTime.value
                     //keeping repeat as false initially
-                    val isRepeat = false
+                    val isRepeat = viewModel.isRepeat.value
                     val frequency = viewModel.frequency.value
                     val slot = viewModel.slot.value
 

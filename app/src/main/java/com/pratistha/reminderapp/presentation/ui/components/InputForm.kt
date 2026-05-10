@@ -74,7 +74,7 @@ fun InputForm(
     val name by viewModel.reminderName.collectAsState()
     val dosage by viewModel.reminderDosage.collectAsState()
     val time by viewModel.reminderTime.collectAsState()
-    val isRepeat by remember { mutableStateOf(false) }
+    val isRepeat by viewModel.isRepeat.collectAsState()
     val frequency by viewModel.frequency.collectAsState()
     val isEditable by viewModel.editingReminder.collectAsState()
     val focusManager = LocalFocusManager.current
@@ -253,7 +253,9 @@ fun InputForm(
                 Spacer(modifier = Modifier.width(8.dp))
                 Switch(
                     checked = isRepeat,
-                    onCheckedChange = { },
+                    onCheckedChange = { isChecked ->
+                        viewModel.onRepeatChange(isChecked)
+                    },
                     colors = SwitchDefaults.colors(
                         checkedTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
                     )
