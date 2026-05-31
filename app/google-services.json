@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "185045303755",
+    "project_id": "dosetime-1459d",
+    "storage_bucket": "dosetime-1459d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:185045303755:android:09c05b77c3f6baea1eb64e",
+        "android_client_info": {
+          "package_name": "com.pratistha.reminderapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHQMP0UyLOq2Svhn4jEAV-FC8FprY-x2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

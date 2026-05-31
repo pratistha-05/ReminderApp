@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -101,25 +102,14 @@ fun ReminderListUi(
                 actions = {
                     ToolTipIcon(
                         onAddClick = {
-                            viewModel.clearEditing()
-                            navController.navigate(Screen.AddReminder.route)
+                            startVoiceRecognition(voiceLauncher)
+//                            viewModel.clearEditing()
+//                            navController.navigate(Screen.AddReminder.route)
                         }
                     )
                 }
             )
         },
-        floatingActionButton = {
-
-                FloatingActionButton(
-                    onClick = {
-                        viewModel.clearEditing()
-                        navController.navigate(Screen.AddReminder.route)
-                    }
-                ) {
-                    Icon(Icons.Default.Add, null)
-                }
-        }
-,
         content = { paddingValues ->
             Box(
                 modifier = Modifier
@@ -208,17 +198,6 @@ fun ReminderListUi(
                         }
                     }
                 }
-
-                FloatingActionButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(16.dp),
-                    onClick = {
-                        startVoiceRecognition(voiceLauncher)
-                    },
-                ) {
-                    Icon(Icons.Default.Mic, contentDescription = "Voice Reminder")
-                }
             }
         }
     )
@@ -267,7 +246,7 @@ fun ToolTipIcon(onAddClick:()->Unit){
         IconButton(
             onClick = { onAddClick()}
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add Reminder")
+            Icon(Icons.Default.SettingsVoice, contentDescription = "Add Reminder")
         }
     }
 }

@@ -9,7 +9,7 @@ import android.provider.Settings
 import android.util.Log
 import com.pratistha.reminderapp.data.local.Reminder
 import com.google.gson.Gson
-import com.pratistha.reminderapp.presentation.ui.ReminderReceiver
+import com.pratistha.reminderapp.utils.ReminderReceiver
 import com.pratistha.reminderapp.utils.REMINDER
 
 

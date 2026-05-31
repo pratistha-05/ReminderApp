@@ -11,7 +11,7 @@ import com.google.gson.Gson
 import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.ShakeDetector
-import com.pratistha.reminderapp.presentation.ui.ReminderReceiver
+import com.pratistha.reminderapp.utils.ReminderReceiver
 import com.pratistha.reminderapp.utils.REMINDER
 import com.pratistha.reminderapp.utils.channelId
 

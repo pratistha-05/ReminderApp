@@ -47,7 +47,7 @@ fun FrequencyDropdown(
             value = selected.value,
             onValueChange = {},
             readOnly = true,
-            enabled = false, // 🔥 prevents consuming clicks
+            enabled = false,
             label = { Text("Frequency") },
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
@@ -56,9 +56,9 @@ fun FrequencyDropdown(
                     contentDescription = "Dropdown"
                 )
             },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = TextFieldDefaults.colors(
                 disabledTextColor = Color.Black,
-                disabledBorderColor = Color.Gray,
+                disabledIndicatorColor = Color.Gray,
                 disabledLabelColor = Color.Gray,
                 disabledTrailingIconColor = Color.Black
             )

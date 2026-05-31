@@ -1,4 +1,4 @@
-package com.pratistha.reminderapp.presentation.ui
+package com.pratistha.reminderapp.utils
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -8,32 +8,30 @@ import android.media.MediaPlayer
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.pratistha.reminderapp.R
-import com.pratistha.reminderapp.utils.REMINDER
-import com.pratistha.reminderapp.data.local.Reminder
-import com.pratistha.reminderapp.domain.useCases.UpdateUseCase
-import com.pratistha.reminderapp.domain.useCases.InsertReminderUseCase
 import com.google.gson.Gson
+import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.data.local.Frequency
+import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.domain.repository.ReminderRepository
+import com.pratistha.reminderapp.domain.useCases.InsertReminderUseCase
+import com.pratistha.reminderapp.domain.useCases.UpdateUseCase
 import com.pratistha.reminderapp.utils.alarm.AlarmService
 import com.pratistha.reminderapp.utils.alarm.alarmSetup
 import com.pratistha.reminderapp.utils.alarm.cancelAlarm
-import com.pratistha.reminderapp.utils.convertDateTimeToMillis
-import com.pratistha.reminderapp.utils.convertMillisToTime
-import com.pratistha.reminderapp.utils.getDaysToSchedule
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class ReminderReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var updateUseCase: UpdateUseCase
-    @Inject lateinit var insertUseCase: InsertReminderUseCase
-    @Inject lateinit var repository: ReminderRepository
+    @Inject
+    lateinit var updateUseCase: UpdateUseCase
+    @Inject
+    lateinit var insertUseCase: InsertReminderUseCase
+    @Inject
+    lateinit var repository: ReminderRepository
 
     override fun onReceive(context: Context, intent: Intent) {
         val mediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.music)

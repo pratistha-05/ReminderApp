@@ -11,10 +11,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.pratistha.reminderapp.presentation.navigation.MainScreen
 import com.pratistha.reminderapp.presentation.ui.AddReminderScreen
 import com.pratistha.reminderapp.presentation.ui.ReminderListUi
+import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.ui.theme.ReminderAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,27 +42,36 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             ReminderAppTheme(darkTheme = false) {
-                val navController = rememberNavController()
-                val sharedViewModel: com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+//                val navController = rememberNavController()
+//                val sharedViewModel: com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+//
+//                androidx.navigation.compose.NavHost(
+//                    navController = navController,
+//                    startDestination = com.pratistha.reminderapp.presentation.navigation.Screen.Home.route
+//                ) {
+//                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
+//                        ReminderListUi(navController = navController, viewModel = sharedViewModel)
+//                    }
+//                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
+//                        AddReminderScreen(navController = navController, viewModel = sharedViewModel)
+//                    }
+//                }
 
-                androidx.navigation.compose.NavHost(
-                    navController = navController,
-                    startDestination = com.pratistha.reminderapp.presentation.navigation.Screen.Home.route
-                ) {
-                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
-                        ReminderListUi(navController = navController, viewModel = sharedViewModel)
-                    }
-                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
-                        AddReminderScreen(navController = navController, viewModel = sharedViewModel)
-                    }
-                }
+                val reminderViewModel: ReminderViewModel =
+                    hiltViewModel()
+
+                MainScreen(
+                    viewModel = reminderViewModel
+                )
             }
         }
     }
 }
 /*
-use medicine api for name list
 widgets
+adding medicine
+open fda api: fetch strings and store in db at first, then fetch strings from db for FTS
+added daily, then edited and added alternate, it gets added on top
 summary- taken missed total
 swipe calendar rows for 1 week
  */
