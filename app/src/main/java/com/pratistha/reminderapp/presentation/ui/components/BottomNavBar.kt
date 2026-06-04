@@ -42,7 +42,8 @@ import com.pratistha.reminderapp.presentation.navigation.BottomNavItem
 @Composable
 fun BottomNavBar(
     selectedIndex: Int,
-    onTabSelected: (Int) -> Unit
+    onTabSelected: (Int) -> Unit,
+    onAddClick: () -> Unit
 ) {
 
     val bottomNavList = listOf(
@@ -121,7 +122,7 @@ fun BottomNavBar(
             }
         }
         FloatingActionButton(
-            onClick = {},
+            onClick = {onAddClick()},
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             modifier = Modifier
                 .size(56.dp)

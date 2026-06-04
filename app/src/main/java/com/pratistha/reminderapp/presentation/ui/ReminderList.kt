@@ -103,8 +103,6 @@ fun ReminderListUi(
                     ToolTipIcon(
                         onAddClick = {
                             startVoiceRecognition(voiceLauncher)
-//                            viewModel.clearEditing()
-//                            navController.navigate(Screen.AddReminder.route)
                         }
                     )
                 }

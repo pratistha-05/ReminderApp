@@ -130,24 +130,6 @@ fun AddMedicineScreen() {
                 )
             }
 
-            if (lowStockReminder) {
-
-                OutlinedTextField(
-                    value = threshold,
-                    onValueChange = {
-                        threshold = it.filter(Char::isDigit)
-                    },
-                    label = {
-                        Text("Low Stock Threshold")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
-                )
-            }
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
