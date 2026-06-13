@@ -12,13 +12,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import com.pratistha.reminderapp.presentation.navigation.MainScreen
-import com.pratistha.reminderapp.presentation.ui.AddReminderScreen
-import com.pratistha.reminderapp.presentation.ui.ReminderListUi
+import com.pratistha.reminderapp.presentation.viewmodel.MedicineViewModel
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.ui.theme.ReminderAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,8 +55,11 @@ class MainActivity : ComponentActivity() {
                 val reminderViewModel: ReminderViewModel =
                     hiltViewModel()
 
+                val medicineViewModel : MedicineViewModel = hiltViewModel()
+
                 MainScreen(
-                    viewModel = reminderViewModel
+                    viewModel = reminderViewModel,
+                    medicineViewModel
                 )
             }
         }
@@ -69,8 +67,6 @@ class MainActivity : ComponentActivity() {
 }
 /*
 widgets
-adding medicine
-open fda api: fetch strings and store in db at first, then fetch strings from db for FTS
 added daily, then edited and added alternate, it gets added on top
 summary- taken missed total
 swipe calendar rows for 1 week

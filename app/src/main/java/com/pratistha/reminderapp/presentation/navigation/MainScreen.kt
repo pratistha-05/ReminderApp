@@ -18,11 +18,13 @@ import com.pratistha.reminderapp.presentation.ui.AddReminderScreen
 import com.pratistha.reminderapp.presentation.ui.ReminderListUi
 import com.pratistha.reminderapp.presentation.ui.components.BottomNavBar
 import com.pratistha.reminderapp.presentation.ui.MedicineListScreen
+import com.pratistha.reminderapp.presentation.viewmodel.MedicineViewModel
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 
 @Composable
 fun MainScreen(
-    viewModel: ReminderViewModel
+    viewModel: ReminderViewModel,
+    medicineViewModel: MedicineViewModel
 ) {
 
     var selectedTab by rememberSaveable {
@@ -59,11 +61,13 @@ fun MainScreen(
                 }
 
                 composable(Screen.MedicineList.route) {
-                    MedicineListScreen()
+                    MedicineListScreen(navController,medicineViewModel)
                 }
 
                 composable(Screen.AddMedicine.route) {
-                    AddMedicineScreen()
+                    AddMedicineScreen(
+                        navController = navController
+                        )
                 }
             }
         }

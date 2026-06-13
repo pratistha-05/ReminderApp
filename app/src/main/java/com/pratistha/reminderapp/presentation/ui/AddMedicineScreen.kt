@@ -1,5 +1,6 @@
 package com.pratistha.reminderapp.presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +22,9 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,14 +32,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pratistha.reminderapp.data.local.Medicine
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMedicineScreen() {
+fun AddMedicineScreen(navController: NavHostController) {
 
     var name by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -50,8 +58,15 @@ fun AddMedicineScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Add Medicine")
+                title = { Text(text = "Add Medicine",color = MaterialTheme.colorScheme.secondary) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
             )
         }
@@ -66,7 +81,7 @@ fun AddMedicineScreen() {
         ) {
 
             Text(
-                text = "Medicine Details",
+                text = "Enter Medicine Details",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -79,7 +94,17 @@ fun AddMedicineScreen() {
                     Text("Medicine Name")
                 },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color(0xFF004D40),
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF004D40),
+                    cursorColor = Color(0xFF004D40)
+                )
             )
 
             OutlinedTextField(
@@ -94,7 +119,17 @@ fun AddMedicineScreen() {
                     keyboardType = KeyboardType.Number
                 ),
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color(0xFF004D40),
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF004D40),
+                    cursorColor = Color(0xFF004D40)
+                )
             )
 
             OutlinedTextField(
@@ -106,7 +141,17 @@ fun AddMedicineScreen() {
                     Text("Purpose")
                 },
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 3
+                maxLines = 2,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color(0xFF004D40),
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF004D40),
+                    cursorColor = Color(0xFF004D40)
+                )
             )
 
             Row(
@@ -151,6 +196,12 @@ fun AddMedicineScreen() {
                     FirebaseFirestore.getInstance()
                         .collection("medicines")
                         .add(medicine)
+                        .addOnSuccessListener {
+                            navController.popBackStack()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("Firestore", "Error adding medicine", e)
+                        }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer

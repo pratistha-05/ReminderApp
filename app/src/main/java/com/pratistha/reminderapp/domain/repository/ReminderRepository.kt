@@ -1,5 +1,6 @@
 package com.pratistha.reminderapp.domain.repository
 
+import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
 import kotlinx.coroutines.flow.Flow
 
@@ -10,4 +11,7 @@ interface  ReminderRepository {
     fun getAllReminders(): Flow<List<Reminder>>
     fun getRemindersForDate(date: String): Flow<List<Reminder>>
     suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String?
+
+    suspend fun getMedicines(): Flow<List<Medicine>>
+
 }
