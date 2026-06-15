@@ -3,8 +3,10 @@ package com.pratistha.reminderapp.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pratistha.reminderapp.data.local.Frequency
+import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.domain.useCases.DeleteUseCase
+import com.pratistha.reminderapp.domain.useCases.GetMedicineUseCase
 import com.pratistha.reminderapp.domain.useCases.GetRemindersUseCase
 import com.pratistha.reminderapp.domain.useCases.InsertReminderUseCase
 import com.pratistha.reminderapp.domain.useCases.UpdateUseCase
@@ -25,7 +27,8 @@ class ReminderViewModel @Inject constructor(
     private val insertUseCase: InsertReminderUseCase,
     private val getRemindersUseCase: GetRemindersUseCase,
     private val deleteUseCase: DeleteUseCase,
-    private val updateUseCase: UpdateUseCase
+    private val updateUseCase: UpdateUseCase,
+    private val getMedicineUseCase: GetMedicineUseCase
 ): ViewModel() {
 
     private val _selectedDate = MutableStateFlow(LocalDate.now().toString())
@@ -37,6 +40,21 @@ class ReminderViewModel @Inject constructor(
     // Form State
     private val _reminderName = MutableStateFlow("")
     val reminderName = _reminderName.asStateFlow()
+
+    private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
+    val medicines = _medicines.asStateFlow()
+
+    init {
+        fetchMedicines()
+    }
+
+    private fun fetchMedicines() {
+        viewModelScope.launch {
+            getMedicineUseCase().collect {
+                _medicines.value = it
+            }
+        }
+    }
 
     private val _reminderDosage = MutableStateFlow(0)
     val reminderDosage = _reminderDosage.asStateFlow()

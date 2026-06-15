@@ -5,8 +5,9 @@ import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.data.local.dao.ReminderDao
 import com.pratistha.reminderapp.domain.repository.ReminderRepository
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepository {
@@ -31,21 +32,21 @@ class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepo
     override suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String? =
         reminderDao.getLastDateForGroup(name, slot, frequency)
 
-    override suspend fun getMedicines(): Flow<List<Medicine>> = flow {
-
-        val snapshot = FirebaseFirestore.getInstance()
+    override fun getMedicines(): Flow<List<Medicine>> = callbackFlow {
+        val subscription = FirebaseFirestore.getInstance()
             .collection("medicines")
-            .get()
-            .await()
-
-        val medicines = snapshot.documents.mapNotNull {
-
-            it.toObject(Medicine::class.java)?.copy(
-
-                id = it.id
-
-            )
-        }
-        emit(medicines)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    val medicines = snapshot.documents.mapNotNull {
+                        it.toObject(Medicine::class.java)?.copy(id = it.id)
+                    }
+                    trySend(medicines)
+                }
+            }
+        awaitClose { subscription.remove() }
     }
 }

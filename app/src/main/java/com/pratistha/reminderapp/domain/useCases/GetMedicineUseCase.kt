@@ -6,5 +6,5 @@ import com.pratistha.reminderapp.domain.repository.ReminderRepository
 import javax.inject.Inject
 
 class GetMedicineUseCase @Inject constructor(private val reminderRepository: ReminderRepository) {
-    suspend operator fun invoke() = reminderRepository.getMedicines()
+    operator fun invoke() = reminderRepository.getMedicines()
 }
