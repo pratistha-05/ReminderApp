@@ -6,6 +6,5 @@ data class Medicine(
     val quantity: Int = 0,
     val purpose: String = "",
     val lowStockReminder: Boolean = true,
-    val dosagePerUse: Int = 1,
     val createdAt: Long = System.currentTimeMillis()
 )

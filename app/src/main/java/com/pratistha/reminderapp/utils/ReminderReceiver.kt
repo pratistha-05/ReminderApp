@@ -56,6 +56,7 @@ class ReminderReceiver : BroadcastReceiver() {
             "DONE" -> {
                 runBlocking {
                     updateUseCase.invoke(reminder.copy(isTaken = true))
+                    repository.updateMedicineQuantity(reminder.name, reminder.dosage.toIntOrNull() ?: 1)
                 }
                 cancelAlarm(context, reminder)
                 context.stopService(Intent(context, AlarmService::class.java))

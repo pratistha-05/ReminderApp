@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pratistha.reminderapp.data.local.Frequency
 import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
+import com.pratistha.reminderapp.domain.repository.ReminderRepository
 import com.pratistha.reminderapp.domain.useCases.DeleteUseCase
 import com.pratistha.reminderapp.domain.useCases.GetMedicineUseCase
 import com.pratistha.reminderapp.domain.useCases.GetRemindersUseCase
@@ -28,7 +29,8 @@ class ReminderViewModel @Inject constructor(
     private val getRemindersUseCase: GetRemindersUseCase,
     private val deleteUseCase: DeleteUseCase,
     private val updateUseCase: UpdateUseCase,
-    private val getMedicineUseCase: GetMedicineUseCase
+    private val getMedicineUseCase: GetMedicineUseCase,
+    private val repository: ReminderRepository
 ): ViewModel() {
 
     private val _selectedDate = MutableStateFlow(LocalDate.now().toString())
@@ -129,7 +131,12 @@ class ReminderViewModel @Inject constructor(
 
     fun update(reminder: Reminder) = viewModelScope.launch {
         updateUseCase.invoke(reminder)
-
+        if (reminder.isTaken) {
+            repository.updateMedicineQuantity(
+                reminder.name,
+                reminder.dosage.toIntOrNull() ?: 1
+            )
+        }
     }
 }
 data class ReminderUiState(
