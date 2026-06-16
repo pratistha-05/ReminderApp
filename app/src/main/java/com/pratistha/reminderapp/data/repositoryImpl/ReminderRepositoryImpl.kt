@@ -1,6 +1,5 @@
 package com.pratistha.reminderapp.data.repositoryImpl
 
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
@@ -61,7 +60,9 @@ class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepo
             .await()
 
         for (doc in snapshot.documents) {
-            doc.reference.update("quantity", FieldValue.increment(-dosage.toLong()))
+            val currentQuantity = doc.getLong("quantity") ?: 0L
+            val newQuantity = (currentQuantity - dosage.toLong()).coerceAtLeast(0L)
+            doc.reference.update("quantity", newQuantity)
         }
     }
 }

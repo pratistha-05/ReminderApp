@@ -96,7 +96,7 @@ fun MedicineCard(
                     )
 
                     Text(
-                        text = if (medicine.quantity == 0) "⚠ Out of stock" else "⚠ Running Low",
+                        text = if (medicine.quantity <= 0) "⚠ Out of stock" else "⚠ Running Low",
                         fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.SemiBold
