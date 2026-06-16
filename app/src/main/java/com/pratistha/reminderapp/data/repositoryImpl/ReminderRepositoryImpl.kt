@@ -10,7 +10,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Singleton
 
+@Singleton
 class ReminderRepositoryImpl(private val reminderDao: ReminderDao): ReminderRepository {
     override suspend fun insert(reminder: Reminder): Long {
         return reminderDao.insert(reminder)

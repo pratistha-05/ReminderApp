@@ -37,7 +37,9 @@ fun MedicineCard(
             .padding(12.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE5EFEC)
+            containerColor = if (medicine.quantity == 0)
+                Color(0xFFFAECEC)
+            else Color(0xFFE5EFEC)
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
@@ -87,14 +89,14 @@ fun MedicineCard(
                     color = Color.Gray
                 )
 
-                if (medicine.quantity == 1) {
+                if (medicine.quantity <= 1) {
 
                     Spacer(
                         modifier = Modifier.height(8.dp)
                     )
 
                     Text(
-                        text = "⚠ Running Low",
+                        text = if (medicine.quantity == 0) "⚠ Out of stock" else "⚠ Running Low",
                         fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.SemiBold
@@ -116,7 +118,7 @@ fun previewMedicineCard() {
 
             name = "Paracetamol 650",
 
-            quantity = 12,
+            quantity = 0,
 
             purpose = "Fever & Body Pain",
 

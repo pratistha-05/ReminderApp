@@ -94,8 +94,9 @@ fun InputForm(
     val medicines by viewModel.medicines.collectAsState()
     var expanded by remember { mutableStateOf(false) }
     val filteredMedicines = remember(name, medicines) {
-        if (name.isEmpty()) medicines
-        else medicines.filter { it.name.contains(name, ignoreCase = true) }
+        val availableMedicines = medicines.filter { it.quantity > 0 }
+        if (name.isEmpty()) availableMedicines
+        else availableMedicines.filter { it.name.contains(name, ignoreCase = true) }
     }
 
     Column(

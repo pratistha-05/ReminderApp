@@ -32,6 +32,7 @@ fun MainScreen(
     }
     val navController = rememberNavController()
 
+    viewModel.fetchMedicines()
     Column(
         modifier = Modifier.fillMaxSize()
     ) {

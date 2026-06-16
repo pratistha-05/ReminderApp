@@ -46,11 +46,7 @@ class ReminderViewModel @Inject constructor(
     private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
     val medicines = _medicines.asStateFlow()
 
-    init {
-        fetchMedicines()
-    }
-
-    private fun fetchMedicines() {
+    fun fetchMedicines() {
         viewModelScope.launch {
             getMedicineUseCase().collect {
                 _medicines.value = it
