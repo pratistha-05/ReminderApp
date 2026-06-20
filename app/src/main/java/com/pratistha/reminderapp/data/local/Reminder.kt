@@ -8,6 +8,7 @@ data class Reminder(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name:String,
+    val medicineId: String? = null,
     val dosage:String,
     val slot: String = "",
     val timeinMillis:Long,

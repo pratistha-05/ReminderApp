@@ -22,7 +22,22 @@ class MedicineViewModel @Inject constructor(
     private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
     val medicines = _medicines.asStateFlow()
 
-    fun getMedicines() {
+    private val _editingMedicine = MutableStateFlow<Medicine?>(null)
+    val editingMedicine = _editingMedicine.asStateFlow()
+
+    init {
+        getMedicines()
+    }
+
+    fun startEditing(medicine: Medicine) {
+        _editingMedicine.value = medicine
+    }
+
+    fun clearEditing() {
+        _editingMedicine.value = null
+    }
+
+    private fun getMedicines() {
 
         viewModelScope.launch {
 

@@ -66,8 +66,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 /*
-widgets
-added daily, then edited and added alternate, it gets added on top
+reminders get swiped as taken even when medicine is not there
+add reminder for medicines
 summary- taken missed total
 swipe calendar rows for 1 week
  */

@@ -8,17 +8,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +30,8 @@ import com.pratistha.reminderapp.data.local.Medicine
 
 @Composable
 fun MedicineCard(
-    medicine: Medicine
+    medicine: Medicine,
+    onEdit: (Medicine) -> Unit
 ) {
 
 
@@ -64,17 +68,27 @@ fun MedicineCard(
                     fontWeight = FontWeight.SemiBold
                 )
 
-                AssistChip(
-                    onClick = {},
-                    label = {
-                        Text("${medicine.quantity} left")
-                    },
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { onEdit(medicine) }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
 
-                    colors = AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        labelColor = Color.White
+                    AssistChip(
+                        onClick = {},
+                        label = {
+                            Text("${medicine.quantity} left")
+                        },
+
+                        colors = AssistChipDefaults.assistChipColors(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            labelColor = Color.White
+                        )
                     )
-                )
+                }
             }
 
             Row(
@@ -124,6 +138,7 @@ fun previewMedicineCard() {
 
             lowStockReminder = true,
 
-            )
+            ),
+        onEdit = {}
     )
 }

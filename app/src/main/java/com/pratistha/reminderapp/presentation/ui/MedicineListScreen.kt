@@ -55,9 +55,6 @@ fun MedicineListScreen(
     val context = LocalContext.current
     val medicineList by viewModel.medicines.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getMedicines()
-    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -82,7 +79,13 @@ fun MedicineListScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(medicineList, key = { it.id }) { medicine ->
-                        MedicineCard(medicine)
+                        MedicineCard(
+                            medicine = medicine,
+                            onEdit = {
+                                viewModel.startEditing(it)
+                                navController.navigate(Screen.AddMedicine.route)
+                            }
+                        )
                     }
                 }
             }

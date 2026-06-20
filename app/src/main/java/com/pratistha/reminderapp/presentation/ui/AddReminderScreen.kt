@@ -70,6 +70,7 @@ fun AddReminderScreen(
                 },
                 onSaveClick = {
                     val name = viewModel.reminderName.value
+                    val medicineId = viewModel.selectedMedicineId.value
                     val dosage = viewModel.reminderDosage.value.toString()
                     val time = viewModel.reminderTime.value
                     //keeping repeat as false initially
@@ -97,6 +98,7 @@ fun AddReminderScreen(
                             // -------- EDIT MODE --------
                             val updatedReminder = existing.copy(
                                 name = name,
+                                medicineId = medicineId,
                                 dosage = dosage,
                                 slot = slot,
                                 timeinMillis = convertDateTimeToMillis(selectedDate, time),
@@ -142,6 +144,7 @@ fun AddReminderScreen(
 
                                 val reminder = Reminder(
                                     name = name,
+                                    medicineId = medicineId,
                                     dosage = dosage,
                                     slot = slot,
                                     timeinMillis = reminderTimeInMillis,

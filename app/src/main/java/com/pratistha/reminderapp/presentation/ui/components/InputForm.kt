@@ -161,7 +161,7 @@ fun InputForm(
                             DropdownMenuItem(
                                 text = { Text(medicine.name, color = Color.Black) },
                                 onClick = {
-                                    viewModel.onNameChange(medicine.name)
+                                    viewModel.onMedicineSelected(medicine)
                                     expanded = false
                                     focusManager.clearFocus()
                                 },

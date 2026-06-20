@@ -1,5 +1,6 @@
 package com.pratistha.reminderapp.presentation.ui
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -166,6 +167,15 @@ fun ReminderListUi(
                                         confirmStateChange = { dismissValue ->
 
                                             if (dismissValue == DismissValue.DismissedToStart) {
+                                                val medicine = viewModel.medicines.value.find { it.name == item.name }
+                                                val dosage = item.dosage.toIntOrNull() ?: 1
+
+                                                if (medicine != null && medicine.quantity < dosage) {
+                                                    Toast.makeText(context, "Please update your stock for this medicine", Toast.LENGTH_LONG).show()
+                                                    return@rememberDismissState false
+                                                }
+
+                                                // to cancel alarm and set it aas true when the reminder item is swiped
                                                 cancelAlarm(context, item)
                                                 viewModel.update(item.copy(isTaken = true))
                                             }

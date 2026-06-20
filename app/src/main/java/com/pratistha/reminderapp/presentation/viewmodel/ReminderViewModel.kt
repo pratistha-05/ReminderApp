@@ -43,10 +43,17 @@ class ReminderViewModel @Inject constructor(
     private val _reminderName = MutableStateFlow("")
     val reminderName = _reminderName.asStateFlow()
 
+    private val _selectedMedicineId = MutableStateFlow<String?>(null)
+    val selectedMedicineId = _selectedMedicineId.asStateFlow()
+
     private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
     val medicines = _medicines.asStateFlow()
 
-    fun fetchMedicines() {
+    init {
+        fetchMedicines()
+    }
+
+    private fun fetchMedicines() {
         viewModelScope.launch {
             getMedicineUseCase().collect {
                 _medicines.value = it
@@ -70,6 +77,10 @@ class ReminderViewModel @Inject constructor(
     val slot = _slot.asStateFlow()
 
     fun onNameChange(newName: String) { _reminderName.value = newName }
+    fun onMedicineSelected(medicine: Medicine) {
+        _reminderName.value = medicine.name
+        _selectedMedicineId.value = medicine.id
+    }
     fun onDosageChange(newDosage: Int) { _reminderDosage.value = newDosage }
     fun onTimeChange(newTime: String) { _reminderTime.value = newTime }
     fun onFrequencyChange(newFrequency: Frequency) { _frequency.value = newFrequency }
@@ -81,6 +92,7 @@ class ReminderViewModel @Inject constructor(
     fun editReminder(reminder: Reminder) {
         _editingReminder.value = reminder
         _reminderName.value = reminder.name
+        _selectedMedicineId.value = reminder.medicineId
         _reminderDosage.value = reminder.dosage.toIntOrNull() ?: 0
         _reminderTime.value = com.pratistha.reminderapp.utils.convertMillisToTime(reminder.timeinMillis)
         _frequency.value = Frequency.values().find { it.value == reminder.frequency } ?: Frequency.Daily
@@ -90,6 +102,7 @@ class ReminderViewModel @Inject constructor(
     fun clearEditing() {
         _editingReminder.value = null
         _reminderName.value = ""
+        _selectedMedicineId.value = null
         _reminderDosage.value = 0
         _reminderTime.value = ""
         _frequency.value = Frequency.Daily
@@ -130,7 +143,8 @@ class ReminderViewModel @Inject constructor(
         if (reminder.isTaken) {
             repository.updateMedicineQuantity(
                 reminder.name,
-                reminder.dosage.toIntOrNull() ?: 1
+                reminder.dosage.toIntOrNull() ?: 1,
+                reminder.medicineId
             )
         }
     }

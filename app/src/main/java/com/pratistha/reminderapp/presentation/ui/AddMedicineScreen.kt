@@ -26,6 +26,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,32 +37,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pratistha.reminderapp.data.local.Medicine
+import com.pratistha.reminderapp.presentation.viewmodel.MedicineViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMedicineScreen(navController: NavHostController) {
+fun AddMedicineScreen(
+    navController: NavHostController,
+    viewModel: MedicineViewModel = hiltViewModel()
+) {
+
+    val editingMedicine by viewModel.editingMedicine.collectAsState()
 
     var name by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
     var purpose by remember { mutableStateOf("") }
+    var lowStockReminder by remember { mutableStateOf(true) }
 
-    var lowStockReminder by remember {
-        mutableStateOf(true)
-    }
-
-    var threshold by remember {
-        mutableStateOf("5")
+    LaunchedEffect(editingMedicine) {
+        editingMedicine?.let {
+            name = it.name
+            quantity = it.quantity.toString()
+            purpose = it.purpose
+            lowStockReminder = it.lowStockReminder
+        }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Add Medicine",color = MaterialTheme.colorScheme.secondary) },
+                title = {
+                    Text(
+                        text = if (editingMedicine != null) "Edit Medicine" else "Add Medicine",
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        viewModel.clearEditing()
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -187,27 +206,41 @@ fun AddMedicineScreen(navController: NavHostController) {
                     ) return@Button
 
                     val medicine = Medicine(
+                        id = editingMedicine?.id ?: "",
                         name = name,
                         quantity = quantity.toInt(),
                         purpose = purpose,
                         lowStockReminder = lowStockReminder,
                     )
 
-                    FirebaseFirestore.getInstance()
-                        .collection("medicines")
-                        .add(medicine)
-                        .addOnSuccessListener {
-                            navController.popBackStack()
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("Firestore", "Error adding medicine", e)
-                        }
+                    val db = FirebaseFirestore.getInstance()
+                    val collection = db.collection("medicines")
+
+                    if (editingMedicine != null) {
+                        collection.document(editingMedicine!!.id)
+                            .set(medicine)
+                            .addOnSuccessListener {
+                                viewModel.clearEditing()
+                                navController.popBackStack()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "Error updating medicine", e)
+                            }
+                    } else {
+                        collection.add(medicine)
+                            .addOnSuccessListener {
+                                navController.popBackStack()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "Error adding medicine", e)
+                            }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
                 )
             ) {
-                Text("Save Medicine")
+                Text(if (editingMedicine != null) "Update" else "Save Medicine")
             }
         }
     }

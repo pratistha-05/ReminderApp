@@ -32,7 +32,6 @@ fun MainScreen(
     }
     val navController = rememberNavController()
 
-    viewModel.fetchMedicines()
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -67,8 +66,9 @@ fun MainScreen(
 
                 composable(Screen.AddMedicine.route) {
                     AddMedicineScreen(
-                        navController = navController
-                        )
+                        navController = navController,
+                        viewModel = medicineViewModel
+                    )
                 }
             }
         }
@@ -95,6 +95,7 @@ fun MainScreen(
                     }
 
                     1 -> {
+                        medicineViewModel.clearEditing()
                         navController.navigate(Screen.AddMedicine.route)
                     }
                 }
