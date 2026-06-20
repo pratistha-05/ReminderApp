@@ -20,10 +20,10 @@ interface ReminderDao{
     @Update
     suspend fun update(data: Reminder)
 
-    @Query("SELECT * FROM Reminder ORDER BY timeInMillis DESC")
+    @Query("SELECT * FROM Reminder ORDER BY timeinMillis DESC")
     fun getAllReminder(): Flow<List<Reminder>>
 
-    @Query("SELECT * FROM  Reminder WHERE date=:date ORDER BY timeInMillis ASC")
+    @Query("SELECT * FROM  Reminder WHERE date=:date ORDER BY timeinMillis ASC")
     fun getRemindersByDate(date: String): Flow<List<Reminder>>
 
     @Query("SELECT MAX(date) FROM Reminder WHERE name=:name AND slot=:slot AND frequency=:frequency")
