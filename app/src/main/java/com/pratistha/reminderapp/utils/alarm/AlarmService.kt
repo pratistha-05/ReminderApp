@@ -5,7 +5,9 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
 import com.pratistha.reminderapp.R
@@ -21,9 +23,16 @@ class AlarmService : Service() {
     private lateinit var shakeDetector: ShakeDetector
     private lateinit var reminder: Reminder
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val stopServiceRunnable = Runnable {
+        // Detach notification and stop service to save battery
+        stopForeground(STOP_FOREGROUND_DETACH)
+        stopSelf()
+    }
+
     override fun onCreate() {
         super.onCreate()
-        mediaPlayer = MediaPlayer.create(this, R.raw.music)
+        mediaPlayer = MediaPlayer.create(this, R.raw.ringtone)
         shakeDetector = ShakeDetector(this) {
             stopSelf()
         }
@@ -39,17 +48,26 @@ class AlarmService : Service() {
         reminder = Gson().fromJson(reminderJson, Reminder::class.java)
         startForeground(1, buildNotification(reminder))
 
-        mediaPlayer.isLooping = true
+        mediaPlayer.isLooping = false
         mediaPlayer.start()
         shakeDetector.start()
+
+        // Auto-stop service after 10 seconds to minimize background activity
+        // The notification will remain in the tray due to STOP_FOREGROUND_DETACH
+        handler.postDelayed(stopServiceRunnable, 10000)
 
         return START_STICKY
     }
 
     override fun onDestroy() {
-        mediaPlayer.stop()
-        mediaPlayer.release()
-        shakeDetector.stop()
+        handler.removeCallbacks(stopServiceRunnable)
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
+        if (::shakeDetector.isInitialized) {
+            shakeDetector.stop()
+        }
         super.onDestroy()
     }
 

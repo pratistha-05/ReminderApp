@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -34,7 +33,6 @@ class ReminderReceiver : BroadcastReceiver() {
     lateinit var repository: ReminderRepository
 
     override fun onReceive(context: Context, intent: Intent) {
-        val mediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.music)
         Log.d("ReminderApp", "Received reminder: ${intent.getStringExtra(REMINDER)}")
         val reminderJson = intent.getStringExtra(REMINDER)
         val reminder = Gson().fromJson(reminderJson, Reminder::class.java)
