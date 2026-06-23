@@ -13,5 +13,5 @@ interface  ReminderRepository {
     suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String?
 
     fun getMedicines(): Flow<List<Medicine>>
-    suspend fun updateMedicineQuantity(name: String, dosage: Int, medicineId: String? = null)
+    suspend fun updateMedicineQuantity(name: String, dosage: Int, medicineId: String? = null): Long
 }

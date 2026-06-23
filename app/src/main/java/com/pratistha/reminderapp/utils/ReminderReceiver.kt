@@ -54,14 +54,17 @@ class ReminderReceiver : BroadcastReceiver() {
             "DONE" -> {
                 runBlocking {
                     updateUseCase.invoke(reminder.copy(isTaken = true))
-                    repository.updateMedicineQuantity(
+                    val newQuantity = repository.updateMedicineQuantity(
                         reminder.name,
                         reminder.dosage.toIntOrNull() ?: 1,
                         reminder.medicineId
                     )
+                    if (newQuantity <= 0) {
+                        showLowStockNotification(context, reminder.name)
+                    }
                 }
                 cancelAlarm(context, reminder)
-                context.stopService(Intent(context, AlarmService::class.java))
+//                context.stopService(Intent(context, AlarmService::class.java))
                 notificationManager.cancel(1)
             }
             "REJECT" -> {
@@ -69,7 +72,7 @@ class ReminderReceiver : BroadcastReceiver() {
                     updateUseCase.invoke(reminder.copy(isTaken = false))
                 }
                 cancelAlarm(context, reminder)
-                context.stopService(Intent(context, AlarmService::class.java))
+//                context.stopService(Intent(context, AlarmService::class.java))
                 notificationManager.cancel(1)
 
             }

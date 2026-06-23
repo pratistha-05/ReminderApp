@@ -37,21 +37,6 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             ReminderAppTheme(darkTheme = false) {
-//                val navController = rememberNavController()
-//                val sharedViewModel: com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel = androidx.hilt.navigation.compose.hiltViewModel()
-//
-//                androidx.navigation.compose.NavHost(
-//                    navController = navController,
-//                    startDestination = com.pratistha.reminderapp.presentation.navigation.Screen.Home.route
-//                ) {
-//                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.Home.route) {
-//                        ReminderListUi(navController = navController, viewModel = sharedViewModel)
-//                    }
-//                    composable(com.pratistha.reminderapp.presentation.navigation.Screen.AddReminder.route) {
-//                        AddReminderScreen(navController = navController, viewModel = sharedViewModel)
-//                    }
-//                }
-
                 val reminderViewModel: ReminderViewModel =
                     hiltViewModel()
 
@@ -67,7 +52,7 @@ class MainActivity : ComponentActivity() {
 }
 /*
 reminders get swiped as taken even when medicine is not there
-add reminder for medicines
+notification comes 2 times one after 10 seconds
 summary- taken missed total
 swipe calendar rows for 1 week
  */

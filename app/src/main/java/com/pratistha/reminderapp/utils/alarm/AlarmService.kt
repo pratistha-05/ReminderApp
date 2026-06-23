@@ -54,6 +54,7 @@ class AlarmService : Service() {
 
         // Auto-stop service after 10 seconds to minimize background activity
         // The notification will remain in the tray due to STOP_FOREGROUND_DETACH
+        handler.removeCallbacks(stopServiceRunnable)
         handler.postDelayed(stopServiceRunnable, 10000)
 
         return START_STICKY
@@ -106,6 +107,7 @@ class AlarmService : Service() {
             .addAction(R.drawable.ic_launcher_foreground, "Skip", rejectPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setOnlyAlertOnce(true)
             .build()
     }
 }

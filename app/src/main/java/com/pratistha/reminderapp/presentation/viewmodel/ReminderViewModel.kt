@@ -138,14 +138,17 @@ class ReminderViewModel @Inject constructor(
         deleteUseCase.invoke(reminder)
     }
 
-    fun update(reminder: Reminder) = viewModelScope.launch {
+    fun update(reminder: Reminder, onLowStock: (String) -> Unit = {}) = viewModelScope.launch {
         updateUseCase.invoke(reminder)
         if (reminder.isTaken) {
-            repository.updateMedicineQuantity(
+            val newQuantity = repository.updateMedicineQuantity(
                 reminder.name,
                 reminder.dosage.toIntOrNull() ?: 1,
                 reminder.medicineId
             )
+            if (newQuantity <= 0) {
+                onLowStock(reminder.name)
+            }
         }
     }
 }

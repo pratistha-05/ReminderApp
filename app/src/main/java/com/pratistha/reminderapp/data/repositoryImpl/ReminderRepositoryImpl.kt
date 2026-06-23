@@ -69,7 +69,7 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
 
     override fun getMedicines(): Flow<List<Medicine>> = medicinesFlow
 
-    override suspend fun updateMedicineQuantity(name: String, dosage: Int, medicineId: String?) {
+    override suspend fun updateMedicineQuantity(name: String, dosage: Int, medicineId: String?): Long {
         val db = FirebaseFirestore.getInstance()
         val collection = db.collection("medicines")
 
@@ -80,11 +80,12 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
             snapshot.documents.firstOrNull()?.reference
         }
 
-        docRef?.let { ref ->
+        return docRef?.let { ref ->
             val doc = ref.get().await()
             val currentQuantity = doc.getLong("quantity") ?: 0L
             val newQuantity = (currentQuantity - dosage.toLong()).coerceAtLeast(0L)
-            ref.update("quantity", newQuantity)
-        }
+            ref.update("quantity", newQuantity).await()
+            newQuantity
+        } ?: 0L
     }
 }

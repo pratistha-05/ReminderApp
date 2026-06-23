@@ -59,6 +59,7 @@ import androidx.navigation.NavController
 import com.pratistha.reminderapp.presentation.navigation.Screen
 import com.pratistha.reminderapp.presentation.ui.components.listItem.SwipeBackground
 import com.pratistha.reminderapp.utils.alarm.cancelAlarm
+import com.pratistha.reminderapp.utils.showLowStockNotification
 import com.pratistha.reminderapp.utils.voice.handleVoiceResult
 import com.pratistha.reminderapp.utils.voice.startVoiceRecognition
 
@@ -177,7 +178,9 @@ fun ReminderListUi(
 
                                                 // to cancel alarm and set it aas true when the reminder item is swiped
                                                 cancelAlarm(context, item)
-                                                viewModel.update(item.copy(isTaken = true))
+                                                viewModel.update(item.copy(isTaken = true)) { name ->
+                                                    showLowStockNotification(context, name)
+                                                }
                                             }
                                             false
                                         }
