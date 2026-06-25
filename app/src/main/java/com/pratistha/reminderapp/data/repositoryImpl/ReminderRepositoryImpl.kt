@@ -5,46 +5,16 @@ import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.data.local.dao.ReminderDao
 import com.pratistha.reminderapp.domain.repository.ReminderRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ReminderRepositoryImpl @Inject constructor(private val reminderDao: ReminderDao): ReminderRepository {
-
-    private val repositoryScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    private val medicinesFlow: Flow<List<Medicine>> by lazy {
-        callbackFlow {
-            val subscription = FirebaseFirestore.getInstance()
-                .collection("medicines")
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null) {
-                        close(error)
-                        return@addSnapshotListener
-                    }
-                    if (snapshot != null) {
-                        val medicines = snapshot.documents.mapNotNull {
-                            it.toObject(Medicine::class.java)?.copy(id = it.id)
-                        }
-                        trySend(medicines)
-                    }
-                }
-            awaitClose { subscription.remove() }
-        }.shareIn(
-            scope = repositoryScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            replay = 1
-        )
-    }
 
     override suspend fun insert(reminder: Reminder): Long {
         return reminderDao.insert(reminder)
@@ -67,7 +37,16 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
     override suspend fun getLastDateForGroup(name: String, slot: String, frequency: String): String? =
         reminderDao.getLastDateForGroup(name, slot, frequency)
 
-    override fun getMedicines(): Flow<List<Medicine>> = medicinesFlow
+    override fun getMedicines(): Flow<List<Medicine>> = flow {
+        val snapshot = FirebaseFirestore.getInstance()
+            .collection("medicines")
+            .get()
+            .await()
+        val medicines = snapshot.documents.mapNotNull {
+            it.toObject(Medicine::class.java)?.copy(id = it.id)
+        }
+        emit(medicines)
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun updateMedicineQuantity(name: String, dosage: Int, medicineId: String?): Long {
         val db = FirebaseFirestore.getInstance()
@@ -87,5 +66,15 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
             ref.update("quantity", newQuantity).await()
             newQuantity
         } ?: 0L
+    }
+
+    override suspend fun upsertMedicine(medicine: Medicine) {
+        val db = FirebaseFirestore.getInstance()
+        val collection = db.collection("medicines")
+        if (medicine.id.isNotEmpty()) {
+            collection.document(medicine.id).set(medicine).await()
+        } else {
+            collection.add(medicine).await()
+        }
     }
 }

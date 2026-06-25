@@ -38,9 +38,9 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,9 +69,10 @@ fun ReminderListUi(
     navController: NavController,
     viewModel: ReminderViewModel = hiltViewModel()
 ) {
-    val list = viewModel.list.collectAsState()
+    val list by viewModel.list.collectAsStateWithLifecycle()
+    val medicines by viewModel.medicines.collectAsStateWithLifecycle()
     val today = LocalDate.now()
-    val selectedDateStr by viewModel.selectedDate.collectAsState()
+    val selectedDateStr by viewModel.selectedDate.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
     val days = remember {
@@ -145,7 +146,7 @@ fun ReminderListUi(
 
 
                     when {
-                        list.value.isLoading -> {
+                        list.isLoading -> {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
@@ -154,7 +155,7 @@ fun ReminderListUi(
                             }
                         }
 
-                        list.value.list.isEmpty() -> {
+                        list.list.isEmpty() -> {
                             EmptyReminderState()
                         }
 
@@ -162,13 +163,13 @@ fun ReminderListUi(
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                items(list.value.list, key = { it.id }) { item ->
+                                items(list.list, key = { it.id }) { item ->
 
                                     val dismissState = rememberDismissState(
                                         confirmStateChange = { dismissValue ->
 
                                             if (dismissValue == DismissValue.DismissedToStart) {
-                                                val medicine = viewModel.medicines.value.find { it.name == item.name }
+                                                val medicine = medicines.find { it.name == item.name }
                                                 val dosage = item.dosage.toIntOrNull() ?: 1
 
                                                 if (medicine != null && medicine.quantity < dosage) {

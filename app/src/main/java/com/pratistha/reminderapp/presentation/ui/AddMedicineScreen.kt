@@ -1,6 +1,5 @@
 package com.pratistha.reminderapp.presentation.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,9 +37,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.firebase.firestore.FirebaseFirestore
 import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.presentation.viewmodel.MedicineViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +48,7 @@ fun AddMedicineScreen(
     viewModel: MedicineViewModel = hiltViewModel()
 ) {
 
-    val editingMedicine by viewModel.editingMedicine.collectAsState()
+    val editingMedicine by viewModel.editingMedicine.collectAsStateWithLifecycle()
 
     var name by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -213,27 +211,9 @@ fun AddMedicineScreen(
                         lowStockReminder = lowStockReminder,
                     )
 
-                    val db = FirebaseFirestore.getInstance()
-                    val collection = db.collection("medicines")
-
-                    if (editingMedicine != null) {
-                        collection.document(editingMedicine!!.id)
-                            .set(medicine)
-                            .addOnSuccessListener {
-                                viewModel.clearEditing()
-                                navController.popBackStack()
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("Firestore", "Error updating medicine", e)
-                            }
-                    } else {
-                        collection.add(medicine)
-                            .addOnSuccessListener {
-                                navController.popBackStack()
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("Firestore", "Error adding medicine", e)
-                            }
+                    viewModel.upsertMedicine(medicine) {
+                        viewModel.clearEditing()
+                        navController.popBackStack()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

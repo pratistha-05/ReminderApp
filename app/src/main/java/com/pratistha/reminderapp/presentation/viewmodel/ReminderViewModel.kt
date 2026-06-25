@@ -46,20 +46,12 @@ class ReminderViewModel @Inject constructor(
     private val _selectedMedicineId = MutableStateFlow<String?>(null)
     val selectedMedicineId = _selectedMedicineId.asStateFlow()
 
-    private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
-    val medicines = _medicines.asStateFlow()
-
-    init {
-        fetchMedicines()
-    }
-
-    private fun fetchMedicines() {
-        viewModelScope.launch {
-            getMedicineUseCase().collect {
-                _medicines.value = it
-            }
-        }
-    }
+    val medicines: StateFlow<List<Medicine>> = getMedicineUseCase()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private val _reminderDosage = MutableStateFlow(0)
     val reminderDosage = _reminderDosage.asStateFlow()

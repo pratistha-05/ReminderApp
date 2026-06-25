@@ -1,5 +1,6 @@
 package com.pratistha.reminderapp.presentation.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,12 +29,16 @@ fun MedicineCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 12.dp, vertical = 4.dp),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE5EFEC)
+        border = BorderStroke(
+            1.dp,
+            color = Color(0xFF51B295)
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFFFFFFF)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(20.dp)
@@ -84,7 +89,7 @@ fun MedicineCard(
                 IconButton(
                     onClick = { onEdit(medicine) },
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(0xFFFDFDFD),
+                        containerColor = Color(0xFFE5F6F1),
                         contentColor = MaterialTheme.colorScheme.primary
                     ),
                     modifier = Modifier.size(36.dp)

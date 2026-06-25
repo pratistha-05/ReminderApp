@@ -43,11 +43,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,25 +73,25 @@ fun InputForm(
     onTimeClick: (String) -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val name by viewModel.reminderName.collectAsState()
-    val dosage by viewModel.reminderDosage.collectAsState()
-    val time by viewModel.reminderTime.collectAsState()
-    val isRepeat by viewModel.isRepeat.collectAsState()
-    val frequency by viewModel.frequency.collectAsState()
-    val isEditable by viewModel.editingReminder.collectAsState()
+    val name by viewModel.reminderName.collectAsStateWithLifecycle()
+    val dosage by viewModel.reminderDosage.collectAsStateWithLifecycle()
+    val time by viewModel.reminderTime.collectAsStateWithLifecycle()
+    val isRepeat by viewModel.isRepeat.collectAsStateWithLifecycle()
+    val frequency by viewModel.frequency.collectAsStateWithLifecycle()
+    val isEditable by viewModel.editingReminder.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
     val nowMillis = System.currentTimeMillis()
 
     val context = LocalContext.current
-    val selectedDateStr by viewModel.selectedDate.collectAsState()
+    val selectedDateStr by viewModel.selectedDate.collectAsStateWithLifecycle()
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
     val selectedMillis = getSelectedDateTimeMillis(selectedDate, time)
     val isPastTime = selectedMillis < nowMillis
     val scrollState = rememberScrollState()
     val slots = ReminderSlot.values().map { it.label }
-    val selectedSlot by viewModel.slot.collectAsState()
+    val selectedSlot by viewModel.slot.collectAsStateWithLifecycle()
 
-    val medicines by viewModel.medicines.collectAsState()
+    val medicines by viewModel.medicines.collectAsStateWithLifecycle()
     var expanded by remember { mutableStateOf(false) }
     val filteredMedicines = remember(name, medicines) {
         val availableMedicines = medicines.filter { it.quantity > 0 }

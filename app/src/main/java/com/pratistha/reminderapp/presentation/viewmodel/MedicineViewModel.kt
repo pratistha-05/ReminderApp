@@ -3,31 +3,32 @@ package com.pratistha.reminderapp.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pratistha.reminderapp.data.local.Medicine
-import com.pratistha.reminderapp.domain.useCases.DeleteUseCase
 import com.pratistha.reminderapp.domain.useCases.GetMedicineUseCase
-import com.pratistha.reminderapp.domain.useCases.GetRemindersUseCase
-import com.pratistha.reminderapp.domain.useCases.InsertReminderUseCase
-import com.pratistha.reminderapp.domain.useCases.UpdateUseCase
+import com.pratistha.reminderapp.domain.useCases.UpsertMedicineUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MedicineViewModel @Inject constructor(
     private val getMedicineUseCase: GetMedicineUseCase,
+    private val upsertMedicineUseCase: UpsertMedicineUseCase
 ) : ViewModel() {
 
-    private val _medicines = MutableStateFlow<List<Medicine>>(emptyList())
-    val medicines = _medicines.asStateFlow()
+    val medicines: StateFlow<List<Medicine>> = getMedicineUseCase()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private val _editingMedicine = MutableStateFlow<Medicine?>(null)
     val editingMedicine = _editingMedicine.asStateFlow()
-
-    init {
-        getMedicines()
-    }
 
     fun startEditing(medicine: Medicine) {
         _editingMedicine.value = medicine
@@ -37,17 +38,10 @@ class MedicineViewModel @Inject constructor(
         _editingMedicine.value = null
     }
 
-    private fun getMedicines() {
-
+    fun upsertMedicine(medicine: Medicine, onComplete: () -> Unit) {
         viewModelScope.launch {
-
-            getMedicineUseCase.invoke()
-
-                .collect { medicines ->
-
-                    _medicines.value = medicines
-
-                }
+            upsertMedicineUseCase(medicine)
+            onComplete()
         }
     }
 }

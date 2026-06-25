@@ -13,9 +13,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,8 +38,8 @@ fun AddReminderScreen(
     viewModel: ReminderViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val editingReminder by viewModel.editingReminder.collectAsState()
-    val selectedDateStr by viewModel.selectedDate.collectAsState()
+    val editingReminder by viewModel.editingReminder.collectAsStateWithLifecycle()
+    val selectedDateStr by viewModel.selectedDate.collectAsStateWithLifecycle()
     val selectedDate = remember(selectedDateStr) { LocalDate.parse(selectedDateStr) }
     val scope = rememberCoroutineScope()
 
