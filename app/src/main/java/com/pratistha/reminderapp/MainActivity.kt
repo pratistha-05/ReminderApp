@@ -11,10 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.pratistha.reminderapp.presentation.navigation.MainScreen
-import com.pratistha.reminderapp.presentation.viewmodel.MedicineViewModel
-import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import com.pratistha.reminderapp.ui.theme.ReminderAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,22 +34,8 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             ReminderAppTheme(darkTheme = false) {
-                val reminderViewModel: ReminderViewModel =
-                    hiltViewModel()
-
-                val medicineViewModel : MedicineViewModel = hiltViewModel()
-
-                MainScreen(
-                    viewModel = reminderViewModel,
-                    medicineViewModel
-                )
+                MainScreen()
             }
         }
     }
 }
-/*
-reminders get swiped as taken even when medicine is not there
-notification comes 2 times one after 10 seconds
-summary- taken missed total
-swipe calendar rows for 1 week
- */
