@@ -38,18 +38,6 @@ class ReminderReceiver : BroadcastReceiver() {
         val reminder = Gson().fromJson(reminderJson, Reminder::class.java)
         val notificationManager = NotificationManagerCompat.from(context)
 
-        val doneIntent = Intent(context, ReminderReceiver::class.java).apply {
-            putExtra(REMINDER, reminderJson)
-            action = "DONE"
-        }
-        val donePendingIntent = PendingIntent.getBroadcast(context, reminder.timeinMillis.toInt(), doneIntent, PendingIntent.FLAG_IMMUTABLE)
-
-        val rejectIntent = Intent(context, ReminderReceiver::class.java).apply {
-            putExtra(REMINDER, reminderJson)
-            action = "REJECT"
-        }
-        val rejectPendingIntent = PendingIntent.getBroadcast(context, reminder.timeinMillis.toInt(), rejectIntent, PendingIntent.FLAG_IMMUTABLE)
-
         when (intent.action) {
             "DONE" -> {
                 runBlocking {
@@ -64,16 +52,16 @@ class ReminderReceiver : BroadcastReceiver() {
                     }
                 }
                 cancelAlarm(context, reminder)
-//                context.stopService(Intent(context, AlarmService::class.java))
-                notificationManager.cancel(1)
+                context.stopService(Intent(context, AlarmService::class.java))
+                notificationManager.cancel(reminder.id + 100)
             }
             "REJECT" -> {
                 runBlocking {
                     updateUseCase.invoke(reminder.copy(isTaken = false))
                 }
                 cancelAlarm(context, reminder)
-//                context.stopService(Intent(context, AlarmService::class.java))
-                notificationManager.cancel(1)
+                context.stopService(Intent(context, AlarmService::class.java))
+                notificationManager.cancel(reminder.id + 100)
 
             }
             else -> {

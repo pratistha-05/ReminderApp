@@ -10,6 +10,7 @@ import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
+import com.pratistha.reminderapp.MainActivity
 import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.data.local.Reminder
 import com.pratistha.reminderapp.presentation.ShakeDetector
@@ -46,16 +47,17 @@ class AlarmService : Service() {
             return START_NOT_STICKY
         }
         reminder = Gson().fromJson(reminderJson, Reminder::class.java)
-        startForeground(1, buildNotification(reminder))
+        val notificationId = reminder.id + 100 // Use a unique ID based on reminder
+        startForeground(notificationId, buildNotification(reminder))
 
-        mediaPlayer.isLooping = false
+        mediaPlayer.isLooping = true
         mediaPlayer.start()
         shakeDetector.start()
 
-        // Auto-stop service after 10 seconds to minimize background activity
+        // Auto-stop service after 60 seconds to minimize background activity
         // The notification will remain in the tray due to STOP_FOREGROUND_DETACH
         handler.removeCallbacks(stopServiceRunnable)
-        handler.postDelayed(stopServiceRunnable, 10000)
+        handler.postDelayed(stopServiceRunnable, 30000)
 
         return START_STICKY
     }
@@ -73,7 +75,7 @@ class AlarmService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        TODO("Not yet implemented")
+        return null
     }
 
     private fun buildNotification(reminder: Reminder): Notification {
@@ -83,7 +85,7 @@ class AlarmService : Service() {
         }
         val donePendingIntent = PendingIntent.getBroadcast(
             this,
-            reminder.timeinMillis.toInt(),
+            reminder.id,
             doneIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -94,7 +96,7 @@ class AlarmService : Service() {
         }
         val rejectPendingIntent = PendingIntent.getBroadcast(
             this,
-            reminder.timeinMillis.toInt(),
+            reminder.id + 1000, // Different request code
             rejectIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -106,8 +108,8 @@ class AlarmService : Service() {
             .addAction(R.drawable.ic_launcher_foreground, "Taken", donePendingIntent)
             .addAction(R.drawable.ic_launcher_foreground, "Skip", rejectPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setOnlyAlertOnce(true)
+            .setAutoCancel(true)
             .build()
     }
 }

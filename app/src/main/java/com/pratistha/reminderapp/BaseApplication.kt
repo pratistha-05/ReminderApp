@@ -22,8 +22,7 @@ class BaseApplication : Application() {
                 description = channelDescription
                 enableLights(true)
                 lightColor = Color.RED
-                enableVibration(true)
-                vibrationPattern = longArrayOf(0, 1000, 500, 1000)
+                enableVibration(false)
             }
 
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
