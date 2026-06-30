@@ -191,7 +191,7 @@ fun ReminderListUi(
 
                                     SwipeToDismiss(
                                         state = dismissState,
-                                        directions = setOf(DismissDirection.EndToStart),
+                                        directions = if (item.isTaken) emptySet() else setOf(DismissDirection.EndToStart),
                                         background = {
                                             SwipeBackground(dismissState)
                                         },
