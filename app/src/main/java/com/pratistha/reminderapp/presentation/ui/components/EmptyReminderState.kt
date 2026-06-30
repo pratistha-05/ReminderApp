@@ -15,10 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.pratistha.reminderapp.R
 
 @Composable
-fun EmptyReminderState() {
+fun EmptyReminderState(id: Int, text: String) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -29,14 +28,14 @@ fun EmptyReminderState() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.no_reminders),
+                painter = painterResource(id),
                 contentDescription = "No reminders",
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "No reminders for this day",
+                text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Gray
             )

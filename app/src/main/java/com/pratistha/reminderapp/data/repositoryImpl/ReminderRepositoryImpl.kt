@@ -1,5 +1,6 @@
 package com.pratistha.reminderapp.data.repositoryImpl
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.pratistha.reminderapp.data.local.Medicine
 import com.pratistha.reminderapp.data.local.Reminder
@@ -38,8 +39,10 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
         reminderDao.getLastDateForGroup(name, slot, frequency)
 
     override fun getMedicines(): Flow<List<Medicine>> = flow {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         val snapshot = FirebaseFirestore.getInstance()
             .collection("medicines")
+            .whereEqualTo("userId", userId)
             .get()
             .await()
         val medicines = snapshot.documents.mapNotNull {
@@ -49,13 +52,18 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
     }.flowOn(Dispatchers.IO)
 
     override suspend fun updateMedicineQuantity(name: String, dosage: Int, medicineId: String?): Long {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         val db = FirebaseFirestore.getInstance()
         val collection = db.collection("medicines")
 
         val docRef = if (medicineId != null) {
             collection.document(medicineId)
         } else {
-            val snapshot = collection.whereEqualTo("name", name).get().await()
+            val snapshot = collection
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("name", name)
+                .get()
+                .await()
             snapshot.documents.firstOrNull()?.reference
         }
 
@@ -69,12 +77,17 @@ class ReminderRepositoryImpl @Inject constructor(private val reminderDao: Remind
     }
 
     override suspend fun upsertMedicine(medicine: Medicine) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         val db = FirebaseFirestore.getInstance()
         val collection = db.collection("medicines")
-        if (medicine.id.isNotEmpty()) {
-            collection.document(medicine.id).set(medicine).await()
+
+        val docRef = if (medicine.id.isNotEmpty()) {
+            collection.document(medicine.id)
         } else {
-            collection.add(medicine).await()
+            collection.document()
         }
+
+        val medicineWithId = medicine.copy(id = docRef.id, userId = userId)
+        docRef.set(medicineWithId).await()
     }
 }

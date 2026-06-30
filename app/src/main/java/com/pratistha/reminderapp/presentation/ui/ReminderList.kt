@@ -21,14 +21,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RichTooltip
@@ -36,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,6 +54,7 @@ import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
 import java.time.LocalDate
 
 import androidx.navigation.NavController
+import com.pratistha.reminderapp.R
 import com.pratistha.reminderapp.presentation.navigation.Screen
 import com.pratistha.reminderapp.presentation.ui.components.listItem.SwipeBackground
 import com.pratistha.reminderapp.utils.alarm.cancelAlarm
@@ -102,6 +101,9 @@ fun ReminderListUi(
                         "Reminders", color = MaterialTheme.colorScheme.secondary
                     )
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                ),
                 actions = {
                     ToolTipIcon(
                         onAddClick = {
@@ -156,7 +158,7 @@ fun ReminderListUi(
                         }
 
                         list.list.isEmpty() -> {
-                            EmptyReminderState()
+                            EmptyReminderState(R.drawable.no_reminders,"No reminders for this day")
                         }
 
                         else -> {
