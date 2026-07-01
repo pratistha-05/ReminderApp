@@ -108,6 +108,7 @@ class AlarmService : Service() {
             .addAction(R.drawable.ic_launcher_foreground, "Taken", donePendingIntent)
             .addAction(R.drawable.ic_launcher_foreground, "Skip", rejectPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setOnlyAlertOnce(true)
             .setAutoCancel(true)
             .build()
