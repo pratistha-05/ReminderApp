@@ -1,5 +1,8 @@
 package com.pratistha.reminderapp.data.local
 
+import androidx.annotation.Keep
+
+@Keep
 data class Medicine(
     val id: String = "",
     val userId: String = "",

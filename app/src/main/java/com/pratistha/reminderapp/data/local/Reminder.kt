@@ -1,8 +1,10 @@
 package com.pratistha.reminderapp.data.local
 
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Keep
 @Entity
 data class Reminder(
     @PrimaryKey(autoGenerate = true)

@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            ReminderAppTheme(darkTheme = false) {
+            ReminderAppTheme {
                 MainScreen()
             }
         }

@@ -57,7 +57,9 @@ fun BottomNavBar(
         )
     )
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding(),
         contentAlignment = Alignment.TopCenter
     ) {
 
