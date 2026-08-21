@@ -11,6 +11,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.firebase.auth.FirebaseAuth
 import com.pratistha.reminderapp.presentation.navigation.MainScreen
 import com.pratistha.reminderapp.ui.theme.ReminderAppTheme
@@ -26,6 +28,15 @@ class MainActivity : ComponentActivity() {
         if (FirebaseAuth.getInstance().currentUser == null) {
             FirebaseAuth.getInstance().signInAnonymously()
         }
+        
+        // Configure Test Devices
+        val testDeviceIds = listOf("YOUR_TEST_DEVICE_ID") // You can get this from logcat when app runs
+        val configuration = RequestConfiguration.Builder()
+            .setTestDeviceIds(testDeviceIds)
+            .build()
+        MobileAds.setRequestConfiguration(configuration)
+
+        MobileAds.initialize(this)
 
         enableEdgeToEdge()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

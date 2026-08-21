@@ -14,15 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.pratistha.reminderapp.presentation.ui.AddMedicineScreen
 import com.pratistha.reminderapp.presentation.ui.AddReminderScreen
 import com.pratistha.reminderapp.presentation.ui.ReminderListUi
 import com.pratistha.reminderapp.presentation.ui.components.BottomNavBar
+import com.pratistha.reminderapp.presentation.ui.components.BannerAdView
 import com.pratistha.reminderapp.presentation.ui.MedicineListScreen
 import com.pratistha.reminderapp.presentation.viewmodel.MedicineViewModel
 import com.pratistha.reminderapp.presentation.viewmodel.ReminderViewModel
+import com.pratistha.reminderapp.utils.BANNER_AD_UNIT_ID
 
 @Composable
 fun MainScreen() {
@@ -31,6 +34,10 @@ fun MainScreen() {
         mutableIntStateOf(0)
     }
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val isAddScreen = currentRoute == Screen.AddReminder.route || currentRoute == Screen.AddMedicine.route
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -98,8 +105,15 @@ fun MainScreen() {
                 }
             }
         }
+        
+        // Show Ads only in Add Reminder and Add Medicine screens
+        if (isAddScreen) {
+            BannerAdView(adUnitId = BANNER_AD_UNIT_ID)
+        }
+
         BottomNavBar(
             selectedIndex = selectedTab,
+            showFab = !isAddScreen,
             onTabSelected = {
                 selectedTab = it
                 when(it) {

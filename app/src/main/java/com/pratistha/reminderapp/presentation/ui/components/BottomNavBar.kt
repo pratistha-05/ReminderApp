@@ -43,7 +43,8 @@ import com.pratistha.reminderapp.presentation.navigation.BottomNavItem
 fun BottomNavBar(
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+    showFab: Boolean = true
 ) {
 
     val bottomNavList = listOf(
@@ -67,7 +68,7 @@ fun BottomNavBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 8.dp)
-                .padding(top = 24.dp), // space for FAB
+                .padding(top = if (showFab) 24.dp else 0.dp), // space for FAB only if shown
             shape = RoundedCornerShape(32.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xFFE5EFEC)
@@ -123,18 +124,20 @@ fun BottomNavBar(
                 }
             }
         }
-        FloatingActionButton(
-            onClick = {onAddClick()},
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            modifier = Modifier
-                .size(56.dp)
-                .offset(y = 0.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add",
-                tint = Color.White
-            )
+        if (showFab) {
+            FloatingActionButton(
+                onClick = { onAddClick() },
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                modifier = Modifier
+                    .size(56.dp)
+                    .offset(y = 0.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                    tint = Color.White
+                )
+            }
         }
     }
 }
