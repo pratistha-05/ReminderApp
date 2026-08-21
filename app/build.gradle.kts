@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "com.pratistha.reminderapp"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 11
         versionName = "1.2"
 
