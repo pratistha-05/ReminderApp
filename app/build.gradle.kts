@@ -16,8 +16,8 @@ android {
         applicationId = "com.pratistha.reminderapp"
         minSdk = 26
         targetSdk = 36
-        versionCode = 11
-        versionName = "1.2"
+        versionCode = 13
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
